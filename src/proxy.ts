@@ -4,32 +4,46 @@ import { NextResponse } from 'next/server'
 
 // Next.js 16+ convention: 'proxy.ts' instead of 'middleware.ts'
 export async function proxy(request: NextRequest) {
-    const token = await getToken({
-        req: request,
-        secret: process.env.NEXTAUTH_SECRET
-    })
-
     const pathname = request.nextUrl.pathname
-    const isAdminRoute = pathname.startsWith('/admin')
-    const isLoginPage = pathname === '/admin/login'
-    const isApiAuthRoute = pathname.startsWith('/api/auth')
+    console.log('[Middleware] Checking path:', pathname)
 
-    // Allow API auth routes
-    if (isApiAuthRoute) {
+    try {
+        const token = await getToken({
+            req: request,
+            secret: process.env.NEXTAUTH_SECRET
+        })
+
+        console.log('[Middleware] Token found:', !!token)
+        if (token) {
+            console.log('[Middleware] User:', token.email)
+        }
+
+        const isAdminRoute = pathname.startsWith('/admin')
+        const isLoginPage = pathname === '/admin/login'
+        const isApiAuthRoute = pathname.startsWith('/api/auth')
+
+        // Allow API auth routes
+        if (isApiAuthRoute) {
+            return NextResponse.next()
+        }
+
+        // Redirect to login if accessing protected admin routes without token
+        if (isAdminRoute && !token && !isLoginPage) {
+            console.log('[Middleware] Redirecting to login (No token)')
+            return NextResponse.redirect(new URL('/admin/login', request.url))
+        }
+
+        // Redirect to admin dashboard if logged in and trying to access login page
+        if (isLoginPage && token) {
+            console.log('[Middleware] Redirecting to dashboard (Already logged in)')
+            return NextResponse.redirect(new URL('/admin', request.url))
+        }
+
+        return NextResponse.next()
+    } catch (error) {
+        console.error('[Middleware] Error:', error)
         return NextResponse.next()
     }
-
-    // Redirect to login if accessing protected admin routes without token
-    if (isAdminRoute && !token && !isLoginPage) {
-        return NextResponse.redirect(new URL('/admin/login', request.url))
-    }
-
-    // Redirect to admin dashboard if logged in and trying to access login page
-    if (isLoginPage && token) {
-        return NextResponse.redirect(new URL('/admin', request.url))
-    }
-
-    return NextResponse.next()
 }
 
 // Ensure default export is also provided if supported/required
