@@ -10,6 +10,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     session: {
         strategy: 'jwt',
     },
+    trustHost: true,
+    debug: process.env.NODE_ENV === 'development',
     pages: {
         signIn: '/admin/login',
     },

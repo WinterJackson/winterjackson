@@ -28,13 +28,16 @@ export default function AdminLoginPage() {
 
       if (result?.error) {
         setError('Invalid email or password')
+        setLoading(false)
+      } else if (result?.ok) {
+        // Use window.location for a hard redirect that properly refreshes cookies
+        window.location.href = '/admin'
       } else {
-        router.push('/admin')
-        router.refresh()
+        setError('Login failed. Please try again.')
+        setLoading(false)
       }
     } catch {
       setError('An error occurred. Please try again.')
-    } finally {
       setLoading(false)
     }
   }
