@@ -13,6 +13,11 @@ export async function proxy(request: NextRequest) {
             secret: process.env.NEXTAUTH_SECRET
         })
 
+        // Debugging Cookie Issues
+        console.log('[Middleware] NODE_ENV:', process.env.NODE_ENV)
+        console.log('[Middleware] Secret configured:', process.env.NEXTAUTH_SECRET ? 'YES' : 'NO')
+        console.log('[Middleware] Cookies:', request.cookies.getAll().map(c => c.name).join(', '))
+
         console.log('[Middleware] Token found:', !!token)
         if (token) {
             console.log('[Middleware] User:', token.email)
