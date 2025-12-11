@@ -5,22 +5,35 @@ import { NextResponse } from 'next/server'
 // Next.js 16+ convention: 'proxy.ts' instead of 'middleware.ts'
 export async function proxy(request: NextRequest) {
     const pathname = request.nextUrl.pathname
+
+    // 1. Determine which cookie is present
+    // NextAuth v5 uses 'authjs.session-token' or '__Secure-authjs.session-token'
+    // NextAuth v4 uses 'next-auth.session-token' or '__Secure-next-auth.session-token'
+    const cookieName = request.cookies.get('__Secure-authjs.session-token')
+        ? '__Secure-authjs.session-token'
+        : request.cookies.get('authjs.session-token')
+            ? 'authjs.session-token'
+            : request.cookies.get('__Secure-next-auth.session-token')
+                ? '__Secure-next-auth.session-token'
+                : 'next-auth.session-token'
+
     console.log('[Middleware] Checking path:', pathname)
+    console.log('[Middleware] Using Cookie Name:', cookieName)
 
     try {
         const token = await getToken({
             req: request,
-            secret: process.env.NEXTAUTH_SECRET
+            secret: process.env.NEXTAUTH_SECRET,
+            cookieName: cookieName
         })
-
-        // Debugging Cookie Issues
-        console.log('[Middleware] NODE_ENV:', process.env.NODE_ENV)
-        console.log('[Middleware] Secret configured:', process.env.NEXTAUTH_SECRET ? 'YES' : 'NO')
-        console.log('[Middleware] Cookies:', request.cookies.getAll().map(c => c.name).join(', '))
 
         console.log('[Middleware] Token found:', !!token)
         if (token) {
             console.log('[Middleware] User:', token.email)
+        } else {
+            // Detailed failure log
+            console.log('[Middleware] Decryption failed or token missing.')
+            console.log('[Middleware] Secret available:', !!process.env.NEXTAUTH_SECRET)
         }
 
         const isAdminRoute = pathname.startsWith('/admin')
