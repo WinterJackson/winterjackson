@@ -1,7 +1,6 @@
 import { Providers } from '@/components/Providers'
 import type { Metadata, Viewport } from 'next'
 import { Poppins } from 'next/font/google'
-import Script from 'next/script'
 import { Toaster } from 'react-hot-toast'
 import './globals.css'
 
@@ -51,7 +50,7 @@ export default async function RootLayout({
             '--primary-color': settings?.primaryColor || '#FFDB70',
         } as React.CSSProperties}
       >
-        <Script src="https://upload-widget.cloudinary.com/global/all.js" strategy="beforeInteractive" />
+
         <Providers>
           {children}
         </Providers>

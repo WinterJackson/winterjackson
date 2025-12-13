@@ -65,14 +65,15 @@
   --ff-poppins: 'Poppins', sans-serif;
 
   /* font-size */
-  --fs-1: 24px;
-  --fs-2: 18px;
-  --fs-3: 17px;
-  --fs-4: 16px;
-  --fs-5: 15px;
-  --fs-6: 14px;
-  --fs-7: 13px;
-  --fs-8: 11px;
+  /* font-size (Mobile Base - Reduced) */
+  --fs-1: 20px;
+  --fs-2: 16px;
+  --fs-3: 15px;
+  --fs-4: 14px;
+  --fs-5: 13px;
+  --fs-6: 12px;
+  --fs-7: 11px;
+  --fs-8: 10px;
 
   /* font-weight */
   --fw-300: 300;
@@ -2117,16 +2118,17 @@ textarea.form-input::-webkit-resizer { display: none; }
 
   :root {
 
+
     /**
-     * typography
+     * typography (Tablet/Medium)
      */
 
-    --fs-1: 32px;
-    --fs-2: 24px;
-    --fs-3: 26px;
-    --fs-4: 18px;
-    --fs-6: 15px;
-    --fs-7: 15px;
+    --fs-1: 26px;
+    --fs-2: 20px;
+    --fs-3: 22px;
+    --fs-4: 16px;
+    --fs-6: 14px;
+    --fs-7: 13px;
     --fs-8: 12px;
 
   }
@@ -2525,6 +2527,17 @@ textarea.form-input::-webkit-resizer { display: none; }
    */
 
   :root {
+
+    /**
+    * typography (Desktop/Large - Original Values Preserved)
+    */
+    --fs-1: 32px;
+    --fs-2: 24px;
+    --fs-3: 26px;
+    --fs-4: 18px;
+    --fs-6: 15px;
+    --fs-7: 15px;
+    --fs-8: 12px;
 
     /**
     * shadow
