@@ -1,5 +1,7 @@
 import { auth } from '@/lib/auth'
 import prisma from '@/lib/prisma'
+import { SkillSchema } from '@/lib/schemas'
+import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
@@ -22,11 +24,20 @@ export async function POST(request: Request) {
         }
 
         const body = await request.json()
-        const { name, percentage, category, iconUrl, order } = body
+        const result = SkillSchema.safeParse(body)
+
+        if (!result.success) {
+            return NextResponse.json(
+                { error: 'Validation failed', details: result.error.flatten() },
+                { status: 400 }
+            )
+        }
 
         const skill = await prisma.skill.create({
-            data: { name, percentage: percentage || 75, category, iconUrl, order: order || 0 },
+            data: result.data,
         })
+
+        revalidatePath('/')
 
         return NextResponse.json(skill, { status: 201 })
     } catch (error) {

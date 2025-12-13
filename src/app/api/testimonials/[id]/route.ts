@@ -1,5 +1,7 @@
 import { auth } from '@/lib/auth'
 import prisma from '@/lib/prisma'
+import { TestimonialSchema } from '@/lib/schemas'
+import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 export async function GET(
@@ -35,12 +37,14 @@ export async function PUT(
 
         const { id } = await params
         const body = await request.json()
-        const { name, role, company, text, linkedinUrl, avatarUrl, isActive } = body
+        const validatedData = TestimonialSchema.parse(body)
 
         const testimonial = await prisma.testimonial.update({
             where: { id },
-            data: { name, role, company, text, linkedinUrl, avatarUrl, isActive },
+            data: validatedData,
         })
+
+        revalidatePath('/')
 
         return NextResponse.json(testimonial)
     } catch (error) {
@@ -63,6 +67,8 @@ export async function DELETE(
         await prisma.testimonial.delete({
             where: { id },
         })
+
+        revalidatePath('/')
 
         return NextResponse.json({ success: true })
     } catch (error) {

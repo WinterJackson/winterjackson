@@ -1,5 +1,6 @@
 import { auth } from '@/lib/auth'
 import prisma from '@/lib/prisma'
+import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 export async function PUT(
@@ -20,6 +21,8 @@ export async function PUT(
             where: { id },
             data: { jobTitle, company, startDate, endDate, description, order },
         })
+
+        revalidatePath('/')
 
         return NextResponse.json(experience)
     } catch (error) {
@@ -42,6 +45,8 @@ export async function DELETE(
         await prisma.experience.delete({
             where: { id },
         })
+
+        revalidatePath('/')
 
         return NextResponse.json({ success: true })
     } catch (error) {

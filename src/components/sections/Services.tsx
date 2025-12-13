@@ -1,46 +1,19 @@
 'use client'
 
+import { DynamicIcon } from '@/lib/icons'
+import { Client, Service } from '@prisma/client'
 import Image from 'next/image'
 
 interface ServicesProps {
   isActive: boolean
+  services: Service[]
+  clients: Client[]
 }
 
-const services = [
-  {
-    icon: '/images/front-dev.png',
-    webpIcon: '/images/front-dev.webp',
-    title: 'Frontend Development',
-    description: 'Well thought out User Interfaces for web applications to enhance the User Experience effectively.',
-  },
-  {
-    icon: '/images/back-dev.png',
-    webpIcon: '/images/back-dev.webp',
-    title: 'Backend Development',
-    description: 'Effective backend development for data security and proper data storage.',
-  },
-  {
-    icon: '/images/phone-app.png',
-    webpIcon: '/images/phone-app.webp',
-    title: 'Mobile apps',
-    description: 'Effective development of applications for both iOS and Android systems.',
-  },
-  {
-    icon: '/images/api.png',
-    webpIcon: '/images/api.webp',
-    title: 'API Development',
-    description: 'Development of the Application Programming Interface to enhance effective communication between the servers and the clients.',
-  },
-]
+export default function Services({ isActive, services, clients }: ServicesProps) {
+  // Filter for only "service" category items
+  const displayServices = services.filter(s => s.category === 'service' || !s.category)
 
-const clients = [
-  { src: '/images/plutus-logo.png', webp: '/images/plutus-logo.webp', alt: 'client logo' },
-  { src: '/images/yikes-logo.png', webp: '/images/yikes-logo.webp', alt: 'client logo' },
-  { src: '/images/allCurrency-logo.png', webp: '/images/allCurrency-logo.webp', alt: 'client logo' },
-  { src: '/images/vepo-logo.png', webp: '/images/vepo-logo.webp', alt: 'client logo' },
-]
-
-export default function Services({ isActive }: ServicesProps) {
   return (
     <article className={`services ${isActive ? 'active' : ''}`} data-page="services">
       <header>
@@ -49,13 +22,22 @@ export default function Services({ isActive }: ServicesProps) {
 
       <section className="hidden show service">
         <ul className="service-list">
-          {services.map((service, index) => (
-            <li key={index} className="service-item">
+          {displayServices.map((service) => (
+            <li key={service.id} className="service-item">
               <div className="service-icon-box">
-                <picture>
-                  <source srcSet={service.webpIcon} type="image/webp" />
-                  <Image src={service.icon} alt={`${service.title} icon`} width={40} height={40} />
-                </picture>
+                <div className="icon-bg">
+                  {service.iconUrl.startsWith('http') || service.iconUrl.startsWith('/') ? (
+                     <Image 
+                      src={service.iconUrl} 
+                      alt={`${service.title} icon`} 
+                      width={40} 
+                      height={40}
+                      style={{ width: '40px', height: '40px', objectFit: 'contain' }}
+                    />
+                  ) : (
+                    <DynamicIcon name={service.iconUrl} size={40} color="#FFDB70" />
+                  )}
+                </div>
               </div>
               <div className="service-content-box">
                 <h4 className="h4 service-item-title">{service.title}</h4>
@@ -66,21 +48,32 @@ export default function Services({ isActive }: ServicesProps) {
         </ul>
       </section>
 
-      <section className="hidden show clients">
-        <h3 className="h3 clients-title">Clients</h3>
-        <div className="slider">
-          {[0, 1].map((wrapIndex) => (
-            <div key={wrapIndex} className="client-items-wrap">
-              {clients.map((client, index) => (
-                <picture key={index}>
-                  <source srcSet={client.webp} type="image/webp" />
-                  <Image src={client.src} alt={client.alt} width={150} height={75} />
-                </picture>
-              ))}
-            </div>
-          ))}
-        </div>
-      </section>
+      {clients.length > 0 && (
+        <section className="hidden show clients">
+          <h3 className="h3 clients-title">Clients</h3>
+          <div className="slider">
+            {[0, 1].map((wrapIndex) => (
+              <div key={wrapIndex} className="client-items-wrap">
+                {clients.map((client) => (
+                  <div key={client.id} className="client-item" style={{ width: '250px', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '15px' }}>
+                    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                      <Image 
+                        src={client.logoUrl} 
+                        alt={client.name} 
+                        fill
+                        sizes="250px"
+                        unoptimized
+                        className="client-logo-img"
+                        style={{ objectFit: 'contain' }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
     </article>
   )
 }

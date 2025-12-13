@@ -1,14 +1,23 @@
 'use client'
 
-import { signIn } from 'next-auth/react'
+import { AlertCircle, ArrowLeft, Lock, LogIn, Mail } from 'lucide-react'
+import { signIn, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import styles from './Login.module.css'
 
 export default function AdminLoginPage() {
   const router = useRouter()
+  const { data: session, status } = useSession()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  // Redirect if already logged in
+  if (status === 'authenticated') {
+    router.push('/admin')
+    return null
+  }
 
   const handleCredentialsLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -49,25 +58,25 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="admin-login-page">
-      <div className="login-container">
-        <div className="login-card">
-          <div className="login-header">
+    <div className={styles.page}>
+      <div className={styles.container}>
+        <div className={styles.card}>
+          <div className={styles.header}>
             <h1>Admin Login</h1>
             <p>Sign in to manage your portfolio</p>
           </div>
 
           {error && (
-            <div className="login-error">
-              <ion-icon name="alert-circle-outline"></ion-icon>
+            <div className={styles.error}>
+              <AlertCircle />
               {error}
             </div>
           )}
 
-          <form onSubmit={handleCredentialsLogin} className="login-form">
-            <div className="form-group">
+          <form onSubmit={handleCredentialsLogin} className={styles.form}>
+            <div className={styles.inputGroup}>
               <label htmlFor="email">
-                <ion-icon name="mail-outline"></ion-icon>
+                <Mail />
                 Email
               </label>
               <input
@@ -80,9 +89,9 @@ export default function AdminLoginPage() {
               />
             </div>
 
-            <div className="form-group">
+            <div className={styles.inputGroup}>
               <label htmlFor="password">
-                <ion-icon name="lock-closed-outline"></ion-icon>
+                <Lock />
                 Password
               </label>
               <input
@@ -97,7 +106,7 @@ export default function AdminLoginPage() {
 
             <button 
               type="submit" 
-              className="login-btn primary"
+              className={`${styles.loginBtn} ${styles.primaryBtn}`}
               disabled={loading}
             >
               {loading ? (
@@ -107,20 +116,20 @@ export default function AdminLoginPage() {
                 </>
               ) : (
                 <>
-                  <ion-icon name="log-in-outline"></ion-icon>
+                  <LogIn />
                   Sign in
                 </>
               )}
             </button>
           </form>
 
-          <div className="login-divider">
+          <div className={styles.divider}>
             <span>or continue with</span>
           </div>
 
           <button 
             onClick={handleGoogleLogin}
-            className="login-btn google"
+            className={`${styles.loginBtn} ${styles.googleBtn}`}
             disabled={loading}
           >
             <svg viewBox="0 0 24 24" width="20" height="20">
@@ -132,9 +141,9 @@ export default function AdminLoginPage() {
             Sign in with Google
           </button>
 
-          <div className="login-footer">
+          <div className={styles.footer}>
             <Link href="/">
-              <ion-icon name="arrow-back-outline"></ion-icon>
+              <ArrowLeft />
               Back to Portfolio
             </Link>
           </div>

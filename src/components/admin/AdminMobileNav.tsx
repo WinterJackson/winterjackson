@@ -1,28 +1,28 @@
-'use client'
-
+import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import styles from './AdminMobileNav.module.css'
 
 export default function AdminMobileNav() {
   const router = useRouter()
 
   return (
-    <div className="admin-mobile-nav">
+    <div className={styles.nav}>
       <button 
         onClick={() => router.back()} 
-        className="nav-arrow-btn"
+        className={styles.arrowBtn}
         aria-label="Go Back"
       >
-        <ion-icon name="arrow-back-outline"></ion-icon>
+        <ArrowLeft size={24} />
       </button>
       
-      <span className="nav-separator">|</span>
+      <span className={styles.separator}>|</span>
 
       <button 
         onClick={() => router.forward()} 
-        className="nav-arrow-btn"
+        className={styles.arrowBtn}
         aria-label="Go Forward"
       >
-        <ion-icon name="arrow-forward-outline"></ion-icon>
+        <ArrowRight size={24} />
       </button>
     </div>
   )

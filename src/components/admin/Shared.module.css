@@ -1,0 +1,15 @@
+.pageHeader {
+  margin-bottom: 30px;
+}
+
+.pageHeader h1 {
+  font-size: var(--fs-1);
+  margin-bottom: 0;
+  width: auto;
+  color: var(--white-1);
+}
+
+.pageHeader p {
+  color: var(--light-gray);
+  width: 100%;
+}

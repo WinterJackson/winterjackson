@@ -1,0 +1,85 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.content {
+  background: var(--eerie-black-1);
+  width: 100%;
+  max-width: 800px;
+  border-radius: 10px;
+  border: 1px solid var(--jet);
+  box-shadow: var(--shadow-5);
+  animation: slideIn 0.3s ease;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes slideIn {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.header {
+  padding: 20px 30px;
+  border-bottom: 1px solid var(--jet);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--eerie-black-2); /* Slight contrast for header */
+}
+
+.closeBtn {
+  font-size: 24px;
+  color: var(--light-gray);
+  transition: 0.2s;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 50%;
+}
+
+.closeBtn:hover {
+  background: var(--onyx);
+  color: var(--white-1);
+}
+
+.body {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Optional footer styling if used externally */
+.footer {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+}
+
+@media (max-width: 768px) {
+  .content {
+    width: 95%;
+    max-height: 85vh;
+  }
+
+  .header,
+  .body {
+    padding: 20px;
+  }
+}

@@ -1,8 +1,15 @@
 'use client'
 
+import { Profile } from '@prisma/client'
+import { ChevronDown, Github, Linkedin, Mail, MapPin, Phone, Smartphone } from 'lucide-react'
+import Image from 'next/image'
 import { useState } from 'react'
 
-export default function Sidebar() {
+interface SidebarProps {
+  profile: Profile
+}
+
+export default function Sidebar({ profile }: SidebarProps) {
   const [isActive, setIsActive] = useState(false)
 
   return (
@@ -13,15 +20,40 @@ export default function Sidebar() {
           <div className="box">
             <div className="spin-container">
               <div className="shape">
-                <div className="avatar-box"></div>
+                <div className="avatar-box">
+                  {profile.profileVideoUrl ? (
+                    <video
+                      src={profile.profileVideoUrl}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        borderRadius: '30px'
+                      }}
+                    />
+                  ) : profile.avatarUrl ? (
+                    <Image
+                      src={profile.avatarUrl}
+                      alt={profile.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 300px"
+                      priority
+                      style={{ objectFit: 'cover', borderRadius: '30px' }}
+                    />
+                  ) : null}
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         <div className="info-content">
-          <h1 className="name" title="Winter Jackson">Winter Jackson.</h1>
-          <p className="title">Software Developer.</p>
+          <h1 className="name" title={profile.name}>{profile.name}.</h1>
+          <p className="title">{profile.title}.</p>
         </div>
 
         <button
@@ -30,7 +62,7 @@ export default function Sidebar() {
           data-sidebar-btn
         >
           <span>Show Contacts</span>
-          <ion-icon name="chevron-down"></ion-icon>
+          <ChevronDown />
         </button>
       </div>
 
@@ -41,12 +73,12 @@ export default function Sidebar() {
           {/* Email */}
           <li className="contact-item">
             <div className="icon-box">
-              <ion-icon name="mail-outline"></ion-icon>
+              <Mail />
             </div>
             <div className="contact-info">
               <p className="contact-title">E-mail</p>
-              <a href="mailto:winterjacksonwj@gmail.com" className="contact-link">
-                winterjacksonwj@gmail.com
+              <a href={`mailto:${profile.email}`} className="contact-link">
+                {profile.email}
               </a>
             </div>
           </li>
@@ -54,37 +86,39 @@ export default function Sidebar() {
           {/* Phone */}
           <li className="contact-item">
             <div className="icon-box">
-              <ion-icon name="phone-portrait-outline"></ion-icon>
+              <Smartphone />
             </div>
             <div className="contact-info">
               <p className="contact-title">Phone</p>
-              <a href="tel:+254795213399" className="contact-link">
-                +254 (795) 213-399
+              <a href={`tel:${profile.phone.replace(/\s+/g, '')}`} className="contact-link">
+                {profile.phone}
               </a>
             </div>
           </li>
 
           {/* Alt Phone */}
-          <li className="contact-item">
+          {profile.altPhone && (
+            <li className="contact-item">
             <div className="icon-box">
-              <ion-icon name="call-outline"></ion-icon>
-            </div>
-            <div className="contact-info">
-              <p className="contact-title">Alt. Phone</p>
-              <a href="tel:+254772393864" className="contact-link">
-                +254 (772) 393-864
-              </a>
-            </div>
-          </li>
+                <Phone />
+              </div>
+              <div className="contact-info">
+                <p className="contact-title">Alt. Phone</p>
+                <a href={`tel:${profile.altPhone.replace(/\s+/g, '')}`} className="contact-link">
+                  {profile.altPhone}
+                </a>
+              </div>
+            </li>
+          )}
 
           {/* Location */}
           <li className="contact-item">
             <div className="icon-box">
-              <ion-icon name="location-outline"></ion-icon>
+              <MapPin />
             </div>
             <div className="contact-info">
               <p className="contact-title">Location</p>
-              <address>Nairobi, Kenya.</address>
+              <address>{profile.location}</address>
             </div>
           </li>
         </ul>
@@ -92,21 +126,27 @@ export default function Sidebar() {
         <div className="separator"></div>
 
         <ul className="social-list">
-          <li className="social-item">
-            <a href="https://github.com/WinterJackson" className="social-link" target="_blank" rel="noopener noreferrer">
-              <ion-icon name="logo-github"></ion-icon>
-            </a>
-          </li>
-          <li className="social-item">
-            <a href="https://www.linkedin.com/in/winter-jackson-454843178/" className="social-link" target="_blank" rel="noopener noreferrer">
-              <ion-icon name="logo-linkedin"></ion-icon>
-            </a>
-          </li>
-          <li className="social-item">
-            <a href="https://wa.me/+254795213399" className="social-link" target="_blank" rel="noopener noreferrer">
-              <ion-icon name="logo-whatsapp"></ion-icon>
-            </a>
-          </li>
+          {profile.github && (
+            <li className="social-item">
+              <a href={profile.github} className="social-link" target="_blank" rel="noopener noreferrer">
+                <Github />
+              </a>
+            </li>
+          )}
+          {profile.linkedin && (
+            <li className="social-item">
+              <a href={profile.linkedin} className="social-link" target="_blank" rel="noopener noreferrer">
+                <Linkedin />
+              </a>
+            </li>
+          )}
+          {profile.whatsapp && (
+            <li className="social-item">
+              <a href={`https://wa.me/${profile.whatsapp.replace(/\s+/g, '')}`} className="social-link" target="_blank" rel="noopener noreferrer">
+                <Phone />
+              </a>
+            </li>
+          )}
         </ul>
       </div>
     </aside>

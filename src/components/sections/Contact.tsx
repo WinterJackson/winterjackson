@@ -1,18 +1,24 @@
 'use client'
 
+import { submitContactMessage } from '@/app/actions/contact'
+import { Profile } from '@prisma/client'
+import { Send } from 'lucide-react'
 import { ChangeEvent, useState } from 'react'
+import toast from 'react-hot-toast'
 
 interface ContactProps {
   isActive: boolean
+  profile: Profile
 }
 
-export default function Contact({ isActive }: ContactProps) {
+export default function Contact({ isActive, profile }: ContactProps) {
   const [formData, setFormData] = useState({
     fullname: '',
     email: '',
     message: '',
   })
   const [isValid, setIsValid] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -25,6 +31,23 @@ export default function Contact({ isActive }: ContactProps) {
       newFormData.email.trim() !== '' &&
       newFormData.message.trim() !== ''
     )
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+
+    const res = await submitContactMessage(formData)
+
+    if (res.success) {
+      toast.success('Message sent successfully!')
+      setFormData({ fullname: '', email: '', message: '' })
+      setIsValid(false)
+    } else {
+      toast.error(res.error || 'Failed to send message')
+    }
+    
+    setIsSubmitting(false)
   }
 
   return (
@@ -51,8 +74,7 @@ export default function Contact({ isActive }: ContactProps) {
         <h3 className="h3 form-title">Contact Form</h3>
 
         <form
-          action="https://formsubmit.co/9cb6998d3e9e2f27846e357fe43156c4"
-          method="POST"
+          onSubmit={handleSubmit}
           className="form"
           data-form
         >
@@ -79,10 +101,7 @@ export default function Contact({ isActive }: ContactProps) {
               data-form-input
             />
 
-            {/* Hidden FormSubmit fields */}
-            <input type="hidden" name="honeypot" style={{ display: 'none' }} />
-            <input type="hidden" name="_captcha" value="false" />
-            <input type="hidden" name="_next" value="https://winterjackson.github.io/success.html" />
+
           </div>
 
           <textarea
@@ -95,9 +114,15 @@ export default function Contact({ isActive }: ContactProps) {
             data-form-input
           ></textarea>
 
-          <button className="form-btn" type="submit" disabled={!isValid} data-form-btn>
-            <ion-icon name="paper-plane"></ion-icon>
-            <span>Send Message</span>
+          <button 
+            className="form-btn" 
+            type="submit" 
+            disabled={!isValid || isSubmitting} 
+            data-form-btn
+            style={{ opacity: !isValid || isSubmitting ? 0.5 : 1 }}
+          >
+            <Send />
+            <span>{isSubmitting ? 'Sending...' : 'Send Message'}</span>
           </button>
         </form>
       </section>

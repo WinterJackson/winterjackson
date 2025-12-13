@@ -1,0 +1,45 @@
+.nav {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.arrowBtn {
+  background: var(--eerie-black-1);
+  border: 1px solid var(--jet);
+  color: var(--white-1);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  border-radius: 10px;
+  transition: var(--transition-1);
+  box-shadow: var(--shadow-1);
+}
+
+.arrowBtn:hover {
+  background: var(--onyx);
+  color: var(--white-1);
+}
+
+.arrowBtn:active {
+  transform: scale(0.95);
+}
+
+.separator {
+  color: var(--white-1);
+  font-size: 14px;
+  margin: 0 4px;
+}
+
+@media (min-width: 1024px) {
+  .nav {
+    display: none;
+  }
+}

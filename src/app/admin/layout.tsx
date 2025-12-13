@@ -1,20 +1,15 @@
 'use client'
 
+import AdminBottomNav from '@/components/admin/AdminBottomNav'
 import AdminMobileNav from '@/components/admin/AdminMobileNav'
-import { SessionProvider, signOut } from 'next-auth/react'
+import { adminNavItems } from '@/lib/adminNav'
+import { LogOut } from 'lucide-react'
+import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-
-const navItems = [
-  { href: '/admin', label: 'Dashboard', icon: 'home-outline' },
-  { href: '/admin/projects', label: 'Projects', icon: 'folder-outline' },
-  { href: '/admin/testimonials', label: 'Testimonials', icon: 'chatbubbles-outline' },
-  { href: '/admin/experience', label: 'Experience', icon: 'briefcase-outline' },
-  { href: '/admin/education', label: 'Education', icon: 'school-outline' },
-  { href: '/admin/skills', label: 'Skills', icon: 'code-slash-outline' },
-  { href: '/admin/services', label: 'Services', icon: 'construct-outline' },
-  { href: '/admin/profile', label: 'Profile', icon: 'person-outline' },
-]
+import { usePathname, useRouter } from 'next/navigation'
+import React from 'react'
+import { Toaster } from 'react-hot-toast'
+import styles from './layout.module.css'
 
 export default function AdminLayout({
   children,
@@ -22,50 +17,71 @@ export default function AdminLayout({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
+  const router = useRouter()
+  const { data: session, status } = useSession()
 
-  // Don't render admin layout for login page
+  React.useEffect(() => {
+    if (status === 'unauthenticated' && pathname !== '/admin/login') {
+      router.push('/admin/login')
+    }
+  }, [status, pathname, router])
+
+  // If we're on the login page, don't show the admin layout
   if (pathname === '/admin/login') {
-    return <>{children}</>
+    return (
+      <>
+        {children}
+        <Toaster position="bottom-right" />
+      </>
+    )
   }
 
+  if (status === 'loading') {
+      return null // Or a spinner
+  }
+
+  if (!session && pathname !== '/admin/login') {
+      return null // Prevent flash before redirect happens in useEffect
+  }
+
+
+
   return (
-    <SessionProvider>
-      <div className="admin-layout">
-        <AdminMobileNav />
-        <aside className="admin-sidebar">
-          <div className="admin-sidebar-header">
-            <h2>Portfolio Admin</h2>
-          </div>
-          
-          <nav className="admin-nav">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`admin-nav-link ${pathname === item.href ? 'active' : ''}`}
-              >
-                <ion-icon name={item.icon}></ion-icon>
-                <span>{item.label}</span>
-              </Link>
-            ))}
-          </nav>
+    <div className={styles.layout}>
+      <aside className={styles.sidebar}>
+        <div className={styles.sidebarHeader}>
+          <h2>Admin Panel</h2>
+        </div>
 
-          <div className="admin-sidebar-footer">
-            <Link href="/" className="admin-nav-link view-site" target="_blank">
-              <ion-icon name="eye-outline"></ion-icon>
-              <span>View Site</span>
+        <nav className={styles.nav}>
+          {adminNavItems.map((item) => (
+            <Link
+              key={item.path}
+              href={item.path}
+              className={`${styles.navLink} ${
+                pathname === item.path ? styles.activeNavLink : ''
+              }`}
+            >
+              <item.icon />
+              <span>{item.name}</span>
             </Link>
-            <button onClick={() => signOut({ callbackUrl: '/admin/login' })} className="admin-logout-btn">
-              <ion-icon name="log-out-outline"></ion-icon>
-              <span>Logout</span>
-            </button>
-          </div>
-        </aside>
+          ))}
+        </nav>
 
-        <main className="admin-main">
-          {children}
-        </main>
-      </div>
-    </SessionProvider>
+        <div className={styles.sidebarFooter}>
+          <button onClick={() => signOut()} className={styles.logoutBtn}>
+            <LogOut />
+            <span>Logout</span>
+          </button>
+        </div>
+      </aside>
+
+      <main className={styles.main}>
+        {children}
+      </main>
+      <AdminMobileNav />
+      <AdminBottomNav />
+      <Toaster position="bottom-right" />
+    </div>
   )
 }

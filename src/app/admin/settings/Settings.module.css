@@ -1,0 +1,189 @@
+.tabsContainer {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--jet);
+  padding-bottom: 1rem;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+}
+
+.tabsContainer::-webkit-scrollbar {
+  height: 5px; /* Thin scrollbar for horizontal tabs */
+}
+
+.tabsContainer::-webkit-scrollbar-track {
+    background: transparent; 
+}
+
+.tabsContainer::-webkit-scrollbar-thumb {
+  background: var(--primary-color, #ff0000);
+  border-radius: 5px;
+}
+
+.tabBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  color: var(--light-gray-70);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: var(--fs-7);
+  font-weight: var(--fw-500);
+  cursor: pointer;
+  transition: var(--transition-1);
+}
+
+.tabBtn:hover {
+  color: var(--white-1);
+  background: var(--jet);
+}
+
+.tabBtnActive {
+  background: rgba(255, 0, 0, 0.1);
+  color: #ff4d4d;
+  border-color: rgba(255, 0, 0, 0.2);
+}
+
+.container {
+  background: var(--eerie-black-1);
+  border-radius: 20px;
+  padding: 1.5rem;
+  border: 1px solid var(--jet);
+  box-shadow: var(--shadow-2);
+}
+
+.sectionTitle {
+  font-size: var(--fs-2);
+  color: var(--white-1);
+  margin-bottom: 1.5rem;
+  font-weight: var(--fw-600);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.colorPickerGroup {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.colorInput {
+  height: 45px;
+  width: 50px;
+  background: transparent;
+  border: 1px solid var(--jet);
+  border-radius: 10px;
+  cursor: pointer;
+  padding: 0 2px;
+}
+
+.colorTextInput {
+  flex: 1;
+}
+
+.divider {
+  border: 0;
+  height: 1px;
+  background: var(--jet);
+  margin: 2rem 0;
+}
+
+.description {
+  color: var(--light-gray-70);
+  font-size: var(--fs-7);
+  margin-bottom: 1.5rem;
+  margin-top: -1rem;
+}
+
+/* Feature Toggles Grid */
+.featuresGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .featuresGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.featureCard {
+  background: var(--onyx);
+  padding: 1.25rem;
+  border-radius: 10px;
+  border: 1px solid var(--jet);
+  transition: var(--transition-1);
+}
+
+.featureCard:hover {
+  border-color: var(--light-gray-70);
+}
+
+.featureLabel {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  width: 100%;
+}
+
+.toggleInput {
+  width: 20px;
+  height: 20px;
+  accent-color: #ff0000;
+  cursor: pointer;
+}
+
+.featureInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.featureTitle {
+  color: var(--white-1);
+  font-weight: var(--fw-500);
+  margin-bottom: 0.25rem;
+}
+
+.featureDesc {
+  color: var(--light-gray-70);
+  font-size: var(--fs-8);
+}
+
+.helperText {
+    font-size: 12px;
+    color: var(--light-gray-70);
+    margin-top: 8px;
+    margin-left: 28px;
+}
+
+.loadingSpinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

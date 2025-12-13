@@ -1,0 +1,81 @@
+/* CSS Only Tooltip */
+.tooltip {
+  position: relative;
+}
+
+.tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 110%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--eerie-black-2);
+  border: 1px solid var(--jet);
+  color: var(--white-2);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  pointer-events: none;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.tooltip::before {
+  content: '';
+  position: absolute;
+  bottom: 105%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  border-width: 5px;
+  border-style: solid;
+  border-color: var(--jet) transparent transparent transparent;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  z-index: 1000;
+}
+
+.tooltip:hover::after,
+.tooltip:hover::before {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Tooltip Positioning Variants */
+.bottom::after {
+  bottom: auto;
+  top: 110%;
+}
+.bottom::before {
+  bottom: auto;
+  top: 105%;
+  border-color: transparent transparent var(--jet) transparent;
+}
+
+.left::after {
+  left: auto;
+  right: 110%;
+  top: 50%;
+  bottom: auto;
+  transform: translateY(-50%) translateX(10px);
+}
+.left::before {
+  left: auto;
+  right: 105%;
+  top: 50%;
+  bottom: auto;
+  transform: translateY(-50%) translateX(10px);
+  border-color: transparent transparent transparent var(--jet);
+}
+
+.left:hover::after,
+.left:hover::before {
+  transform: translateY(-50%) translateX(0);
+}

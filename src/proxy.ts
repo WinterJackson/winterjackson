@@ -57,7 +57,30 @@ export async function proxy(request: NextRequest) {
             return NextResponse.redirect(new URL('/admin', request.url))
         }
 
-        return NextResponse.next()
+        // Create response with security headers
+        const response = NextResponse.next()
+
+        // Security Headers
+        response.headers.set('X-Frame-Options', 'DENY')
+        response.headers.set('X-Content-Type-Options', 'nosniff')
+        response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+        response.headers.set('X-XSS-Protection', '1; mode=block')
+
+        // Content Security Policy
+        response.headers.set(
+            'Content-Security-Policy',
+            [
+                "default-src 'self'",
+                "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://unpkg.com",
+                "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+                "font-src 'self' https://fonts.gstatic.com",
+                "img-src 'self' data: https: blob:",
+                "connect-src 'self' https://res.cloudinary.com",
+                "frame-ancestors 'none'",
+            ].join('; ')
+        )
+
+        return response
     } catch (error) {
         console.error('[Middleware] Error:', error)
         return NextResponse.next()

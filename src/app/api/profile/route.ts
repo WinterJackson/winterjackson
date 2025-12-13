@@ -1,5 +1,7 @@
 import { auth } from '@/lib/auth'
 import prisma from '@/lib/prisma'
+import { ProfileSchema } from '@/lib/schemas'
+import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
@@ -20,12 +22,30 @@ export async function PUT(request: Request) {
         }
 
         const body = await request.json()
-        const { id, name, title, email, phone, altPhone, location, bio, avatarUrl, github, linkedin, whatsapp, cvUrl } = body
 
-        const profile = await prisma.profile.update({
-            where: { id },
-            data: { name, title, email, phone, altPhone, location, bio, avatarUrl, github, linkedin, whatsapp, cvUrl },
+        // Validate with Zod
+        const result = ProfileSchema.safeParse(body)
+        if (!result.success) {
+            return NextResponse.json(
+                { error: 'Validation failed', details: result.error.flatten() },
+                { status: 400 }
+            )
+        }
+
+        const { name, title, email, phone, altPhone, location, bio, avatarUrl, profileVideoUrl, github, linkedin, whatsapp, cvUrl } = result.data
+
+        const profile = await prisma.profile.upsert({
+            where: { id: 'default-profile' },
+            update: {
+                name, title, email, phone, altPhone, location, bio, avatarUrl, profileVideoUrl, github, linkedin, whatsapp, cvUrl
+            },
+            create: {
+                id: 'default-profile',
+                name, title, email, phone, altPhone, location, bio, avatarUrl, profileVideoUrl, github, linkedin, whatsapp, cvUrl
+            }
         })
+
+        revalidatePath('/')
 
         return NextResponse.json(profile)
     } catch (error) {

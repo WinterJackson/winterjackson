@@ -1,5 +1,7 @@
 import { auth } from '@/lib/auth'
 import prisma from '@/lib/prisma'
+import { EducationSchema } from '@/lib/schemas'
+import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
@@ -22,11 +24,20 @@ export async function POST(request: Request) {
         }
 
         const body = await request.json()
-        const { institution, degree, field, startDate, endDate, order } = body
+        const result = EducationSchema.safeParse(body)
+
+        if (!result.success) {
+            return NextResponse.json(
+                { error: 'Validation failed', details: result.error.flatten() },
+                { status: 400 }
+            )
+        }
 
         const education = await prisma.education.create({
-            data: { institution, degree, field, startDate, endDate, order: order || 0 },
+            data: result.data,
         })
+
+        revalidatePath('/')
 
         return NextResponse.json(education, { status: 201 })
     } catch (error) {

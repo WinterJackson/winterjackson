@@ -1,110 +1,27 @@
-'use client'
-
+import { DynamicIcon } from '@/lib/icons'
+import { Profile, Service, Skill, Testimonial } from '@prisma/client'
+import { Linkedin, X } from 'lucide-react'
 import Image from 'next/image'
 import { useState } from 'react'
 
 interface AboutProps {
   isActive: boolean
+  profile: Profile
+  testimonials: Testimonial[]
+  services: Service[]
+  skills: Skill[]
 }
 
-const whatIDo = [
-  {
-    icon: '/images/front-dev.png',
-    webpIcon: '/images/front-dev.webp',
-    title: 'Frontend Development',
-    description: 'Well thought out User Interfaces for web applications to enhance the User Experience effectively.',
-  },
-  {
-    icon: '/images/back-dev.png',
-    webpIcon: '/images/back-dev.webp',
-    title: 'Backend Development',
-    description: 'Effective backend development for data security and proper data storage.',
-  },
-  {
-    icon: '/images/phone-app.png',
-    webpIcon: '/images/phone-app.webp',
-    title: 'Mobile apps',
-    description: 'Effective development of applications for both iOS and Android systems.',
-  },
-  {
-    icon: '/images/api.png',
-    webpIcon: '/images/api.webp',
-    title: 'API Development',
-    description: 'Development of the Application Programming Interface to enhance effective communication between the servers and the clients.',
-  },
-]
+export default function About({ isActive, profile, testimonials, services, skills }: AboutProps) {
+  const [activeModal, setActiveModal] = useState<Testimonial | null>(null)
 
-const languages = [
-  { src: '/images/CSS3.png', name: 'CSS3' },
-  { src: '/images/HTML5.png', name: 'HTML5' },
-  { src: '/images/javascript.svg', name: 'JavaScript' },
-  { src: '/images/react.svg', name: 'React' },
-  { src: '/images/Tailwind.png', name: 'Tailwind CSS' },
-  { src: '/images/nextjs-dark.svg', name: 'Next.js' },
-  { src: '/images/nodejs.svg', name: 'Node.js' },
-  { src: '/images/python.svg', name: 'Python' },
-  { src: '/images/flask.svg', name: 'Flask' },
-  { src: '/images/mysql.svg', name: 'MySQL' },
-  { src: '/images/sqlite.png', name: 'SQLite' },
-  { src: '/images/sqlalchemy.png', name: 'SQLAlchemy' },
-  { src: '/images/Ruby.png', name: 'Ruby' },
-  { src: '/images/MongoDB.svg', name: 'MongoDB' },
-  { src: '/images/Jest.svg', name: 'Jest' },
-]
+  // Filter Services
+  const whatIDo = services.filter(s => s.category === 'service' || !s.category)
+  const personalVentures = services.filter(s => s.category === 'venture')
 
-const otherTools = [
-  { src: '/images/Linux.png', name: 'Linux' },
-  { src: '/images/Postman.svg', name: 'Postman' },
-  { src: '/images/postgresql.svg', name: 'PostgreSQL' },
-  { src: '/images/Heroku.png', name: 'Heroku' },
-  { src: '/images/Git.png', name: 'Git' },
-  { src: '/images/Figma.png', name: 'Figma' },
-]
-
-const personalVentures = [
-  {
-    icon: '/images/artificial-intelligence.png',
-    webpIcon: '/images/artificial-intelligence.webp',
-    title: 'Artificial Intelligence',
-    description: 'Together with Machine Learning, Artificial Intelligence has imensely impacted the tech world.',
-  },
-  {
-    icon: '/images/robotics.png',
-    webpIcon: '/images/robotics.webp',
-    title: 'Cyber Security',
-    description: 'As data greatly becomes the gold mine for people in the tech world, cyber security has now been more on demand than ever.',
-  },
-]
-
-const testimonials = [
-  {
-    name: 'Jeremy Omare',
-    role: 'Renewable Energy Professional.',
-    linkedin: 'https://www.linkedin.com/in/jeremyomare/',
-    text: '"Exceptional service! Jackson provided unparalleled expertise and support throughout the entire development process. The attention to detail and commitment to delivering high-quality results exceeded my expectations. I highly recommend the services to anyone looking for top-notch tech solutions."',
-    avatar: '/images/user.png',
-    webpAvatar: '/images/user.webp',
-  },
-  {
-    name: 'Nelson Lawrence',
-    role: 'MD, Pinnacle Green Systems Ltd.',
-    linkedin: 'https://www.linkedin.com/in/nelson-lawrence-91bb2671/',
-    text: '"Working with Winter Jackson, on my project has been a positive experience so far. The collaborative nature and innovative solutions have made the development process smooth and efficient. Looking forward to the project\'s completion!"',
-    avatar: '/images/user.png',
-    webpAvatar: '/images/user.webp',
-  },
-  {
-    name: 'Kimathi I.',
-    role: 'Investment Manager',
-    linkedin: 'https://www.linkedin.com/in/ikiao/',
-    text: '"Absolutely reliable and highly efficient! Not only was our project completed well ahead of schedule, but the quality of work delivered surpassed the expectations. Exceptional service from start to finish!"',
-    avatar: '/images/user.png',
-    webpAvatar: '/images/user.webp',
-  },
-]
-
-export default function About({ isActive }: AboutProps) {
-  const [activeModal, setActiveModal] = useState<typeof testimonials[0] | null>(null)
+  // Filter Skills
+  const myLanguages = skills.filter(s => ['frontend', 'backend', 'database'].includes(s.category.toLowerCase()))
+  const myTools = skills.filter(s => ['tools', 'other'].includes(s.category.toLowerCase()))
 
   return (
     <article className={`about ${isActive ? 'active' : ''}`} data-page="about">
@@ -113,31 +30,18 @@ export default function About({ isActive }: AboutProps) {
       </header>
 
       <section className="hidden show about-text">
-        <p>
-          An experienced software developer proficient in analyzing, modifying,
-          and designing end-user applications tailored to specific needs. Skilled
-          in Python, React JS, Next JS, and common libraries for development
-          and testing.
-        </p>
-        <p>
-          I am committed to developing a website or application that seamlessly blends functionality with
-          aesthetic appeal. With a focus on user experience, I strive to infuse each project with a
-          personal touch, ensuring it is visually captivating and easily navigable. Thus effectively
-          engaging the users while positively upholding the brand identity through a creative design and a
-          user-friendly interface.
-        </p>
+        <div dangerouslySetInnerHTML={{ __html: profile.bio.replace(/\n/g, '<br/>') }} />
       </section>
 
       {/* What I Do */}
       <section className="hidden show service">
         <h3 className="h3 service-title">What I Do</h3>
         <ul className="service-list">
-          {whatIDo.map((item, index) => (
-            <li key={index} className="service-item">
+          {whatIDo.map((item) => (
+            <li key={item.id} className="service-item">
               <div className="service-icon-box">
                 <picture>
-                  <source srcSet={item.webpIcon} type="image/webp" />
-                  <Image src={item.icon} alt={`${item.title} icon`} width={40} height={40} />
+                  <Image src={item.iconUrl} alt={`${item.title} icon`} width={40} height={40} />
                 </picture>
               </div>
               <div className="service-content-box">
@@ -162,16 +66,25 @@ export default function About({ isActive }: AboutProps) {
             </div>
             {[0, 1].map((wrapIndex) => (
               <div key={wrapIndex} className="languages-items-wrap">
-                {languages.map((lang, index) => (
+                {myLanguages.map((lang, index) => (
                   <div key={index} className="slider-item">
                     <div className="slider-img-container">
-                      <Image 
-                        src={lang.src} 
-                        alt={`${lang.name} logo`} 
-                        width={60} 
-                        height={60}
-                        style={{ objectFit: 'contain', width: '60px', height: '60px' }}
-                      />
+                      {lang.iconUrl ? (
+                         lang.iconUrl.startsWith('http') || lang.iconUrl.startsWith('/') ? (
+                            <Image 
+                              src={lang.iconUrl} 
+                              alt={`${lang.name} logo`} 
+                              width={60} 
+                              height={60}
+                              unoptimized
+                              style={{ objectFit: 'contain', width: '60px', height: '60px' }}
+                            />
+                         ) : (
+                            <DynamicIcon name={lang.iconUrl} size={60} />
+                         )
+                      ) : (
+                         <div className="text-xl font-bold">{lang.name.substring(0, 2)}</div>
+                      )}
                     </div>
                     <p>{lang.name}</p>
                   </div>
@@ -186,16 +99,25 @@ export default function About({ isActive }: AboutProps) {
             </div>
             {[0, 1].map((wrapIndex) => (
               <div key={wrapIndex} className="others-items-wrap">
-                {otherTools.map((tool, index) => (
+                {myTools.map((tool, index) => (
                   <div key={index} className="slider-item">
                     <div className="slider-img-container">
-                      <Image 
-                        src={tool.src} 
-                        alt={`${tool.name} logo`} 
-                        width={60} 
-                        height={60}
-                        style={{ objectFit: 'contain', width: '60px', height: '60px' }}
-                      />
+                      {tool.iconUrl ? (
+                         tool.iconUrl.startsWith('http') || tool.iconUrl.startsWith('/') ? (
+                            <Image 
+                              src={tool.iconUrl} 
+                              alt={`${tool.name} logo`} 
+                              width={60} 
+                              height={60}
+                              unoptimized
+                              style={{ objectFit: 'contain', width: '60px', height: '60px' }}
+                            />
+                         ) : (
+                            <DynamicIcon name={tool.iconUrl} size={60} />
+                         )
+                      ) : (
+                         <div className="text-xl font-bold">{tool.name.substring(0, 2)}</div>
+                      )}
                     </div>
                     <p>{tool.name}</p>
                   </div>
@@ -210,12 +132,11 @@ export default function About({ isActive }: AboutProps) {
       <section className="hidden show service">
         <h3 className="h3 service-title">Personal Ventures</h3>
         <ul className="service-list">
-          {personalVentures.map((item, index) => (
-            <li key={index} className="service-item">
+          {personalVentures.map((item) => (
+            <li key={item.id} className="service-item">
               <div className="service-icon-box">
                 <picture>
-                  <source srcSet={item.webpIcon} type="image/webp" />
-                  <Image src={item.icon} alt={`${item.title} icon`} width={40} height={40} />
+                  <Image src={item.iconUrl} alt={`${item.title} icon`} width={40} height={40} />
                 </picture>
               </div>
               <div className="service-content-box">
@@ -231,24 +152,23 @@ export default function About({ isActive }: AboutProps) {
       <section className="hidden show testimonials">
         <h3 className="h3 testimonials-title">Testimonials</h3>
         <ul className="testimonials-list has-scrollbar">
-          {testimonials.map((testimonial, index) => (
-            <li key={index} className="testimonials-item">
+          {testimonials.map((testimonial) => (
+            <li key={testimonial.id} className="testimonials-item">
               <div
                 className="content-card"
                 onClick={() => setActiveModal(testimonial)}
                 data-testimonials-item
               >
                 <figure className="testimonials-avatar-box">
-                  <picture>
-                    <source srcSet={testimonial.webpAvatar} type="image/webp" />
+                  {testimonial.avatarUrl && (
                     <Image
-                      src={testimonial.avatar}
+                      src={testimonial.avatarUrl}
                       alt={testimonial.name}
                       width={60}
                       height={60}
                       data-testimonials-avatar
                     />
-                  </picture>
+                  )}
                 </figure>
 
                 <div className="testimonial-name-wrap">
@@ -259,11 +179,13 @@ export default function About({ isActive }: AboutProps) {
                 </div>
 
                 <div className="testimonials-text" data-testimonials-text>
-                  <a className="t-text" href={testimonial.linkedin} target="_blank" rel="noopener noreferrer">
-                    <span>LinkedIn</span>
-                    <ion-icon name="logo-linkedin"></ion-icon>
-                  </a>
-                  <p>{testimonial.text}</p>
+                    {testimonial.linkedinUrl && (
+                        <a className="t-text" href={testimonial.linkedinUrl} target="_blank" rel="noopener noreferrer">
+                            <span>LinkedIn</span>
+                            <Linkedin />
+                        </a>
+                    )}
+                  <p>{testimonial.text.replace(/"/g, '')}</p>
                 </div>
               </div>
             </li>
@@ -281,21 +203,20 @@ export default function About({ isActive }: AboutProps) {
               onClick={() => setActiveModal(null)}
               data-modal-close-btn
             >
-              <ion-icon name="close-outline"></ion-icon>
+              <X />
             </button>
 
             <div className="modal-img-wrapper">
               <figure className="modal-avatar-box">
-                <picture>
-                  <source srcSet={activeModal.webpAvatar} type="image/webp" />
+                {activeModal.avatarUrl && (
                   <Image
-                    src={activeModal.avatar}
+                    src={activeModal.avatarUrl}
                     alt={activeModal.name}
                     width={80}
                     height={80}
                     data-modal-img
                   />
-                </picture>
+                )}
               </figure>
             </div>
 
@@ -304,7 +225,7 @@ export default function About({ isActive }: AboutProps) {
                 <h4 className="h3 modal-title" data-modal-title>{activeModal.name}</h4>
               </div>
               <div data-modal-text>
-                <p>{activeModal.text}</p>
+                <p>{activeModal.text.replace(/"/g, '')}</p>
               </div>
             </div>
           </section>

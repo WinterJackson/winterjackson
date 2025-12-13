@@ -1,5 +1,8 @@
+
 import { auth } from '@/lib/auth'
 import prisma from '@/lib/prisma'
+import { ServiceSchema } from '@/lib/schemas'
+import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
@@ -22,11 +25,20 @@ export async function POST(request: Request) {
         }
 
         const body = await request.json()
-        const { title, description, iconUrl, order } = body
+        const result = ServiceSchema.safeParse(body)
+
+        if (!result.success) {
+            return NextResponse.json(
+                { error: 'Validation failed', details: result.error.flatten() },
+                { status: 400 }
+            )
+        }
 
         const service = await prisma.service.create({
-            data: { title, description, iconUrl, order: order || 0 },
+            data: result.data,
         })
+
+        revalidatePath('/')
 
         return NextResponse.json(service, { status: 201 })
     } catch (error) {

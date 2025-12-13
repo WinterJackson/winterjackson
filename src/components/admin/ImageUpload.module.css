@@ -1,0 +1,143 @@
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.label {
+  font-size: var(--fs-7);
+  color: var(--light-gray-70);
+  font-weight: var(--fw-500);
+}
+
+.uploadArea {
+  position: relative;
+  width: 100%;
+  min-height: 200px;
+  background: var(--onyx);
+  border: 2px dashed var(--jet);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.uploadArea:hover {
+  border-color: var(--bittersweet-shimmer);
+  background: var(--eerie-black-1);
+}
+
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px;
+  text-align: center;
+  color: var(--light-gray);
+  transition: all 0.3s ease;
+}
+
+.uploadArea:hover .placeholder {
+  color: var(--white-1);
+  transform: translateY(-2px);
+}
+
+.iconWrapper {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--jet);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  transition: all 0.3s ease;
+}
+
+.uploadArea:hover .iconWrapper {
+  background: var(--bittersweet-shimmer);
+  color: white;
+  box-shadow: 0 4px 12px rgba(255, 90, 0, 0.3);
+}
+
+.icon {
+  font-size: 32px;
+}
+
+.textMain {
+  font-size: 16px;
+  font-weight: var(--fw-600);
+}
+
+.textSub {
+  font-size: 13px;
+  color: var(--light-gray-70);
+}
+
+/* Filled State */
+.previewContainer {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  background: var(--eerie-black-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.previewImage {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 8px;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.uploadArea:hover .overlay {
+  opacity: 1;
+}
+
+.changeBtn {
+  background: white;
+  color: black;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+}
+
+.uploadArea:hover .changeBtn {
+  transform: translateY(0);
+}
+
+.inputError {
+  border-color: #ff4b4b;
+}
+
+.errorMessage {
+  color: #ff4b4b;
+  font-size: 12px;
+  margin-top: 4px;
+}
