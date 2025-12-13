@@ -14,7 +14,7 @@ const poppins = Poppins({
 import { prisma } from '@/lib/prisma'
 
 export const viewport: Viewport = {
-  themeColor: '#212122',
+  themeColor: '#421b1c',
 }
 
 export async function generateMetadata(): Promise<Metadata> {
