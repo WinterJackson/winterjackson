@@ -22,6 +22,7 @@ const ProfileSchema = z.object({
   bio: z.string().min(10, 'Bio must be at least 10 characters'),
   avatarUrl: z.string().optional(),
   profileVideoUrl: z.string().optional(),
+  cvUrl: z.string().optional(),
   github: z.string().optional(),
   linkedin: z.string().optional(),
   whatsapp: z.string().optional(),
@@ -159,6 +160,16 @@ export default function ProfileManager() {
             label="Profile Video (MP4)"
           />
           <p className="text-xs text-gray-500 mt-1">Video will display in sidebar with red morphing border</p>
+        </div>
+
+        <div className={formStyles.group}>
+          <ImageUpload
+            value={watch('cvUrl') || ''}
+            onChange={(url) => setValue('cvUrl', url)}
+            label="Resume / CV (PDF)"
+            resourceType="raw"
+          />
+          <p className="text-xs text-gray-500 mt-1">Upload your latest CV (PDF format). This will be linked to the "Download CV" button.</p>
         </div>
 
         <hr className="my-6 border-gray-700" />

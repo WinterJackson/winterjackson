@@ -16,6 +16,7 @@ export default function Portfolio({ isActive, projects }: PortfolioProps) {
   const [filter, setFilter] = useState('All')
   const [filteredProjects, setFilteredProjects] = useState<Project[]>(projects)
   const [hoveredProject, setHoveredProject] = useState<string | null>(null)
+  const [isSelectOpen, setIsSelectOpen] = useState(false)
 
   useEffect(() => {
     if (filter === 'All') {
@@ -32,6 +33,7 @@ export default function Portfolio({ isActive, projects }: PortfolioProps) {
 
   const handleFilterClick = (category: string) => {
     setFilter(category)
+    setIsSelectOpen(false)
   }
 
   return (
@@ -55,8 +57,12 @@ export default function Portfolio({ isActive, projects }: PortfolioProps) {
           ))}
         </ul>
 
-        <div className="filter-select-box">
-          <button className="filter-select" data-select>
+        <div className={`filter-select-box ${isSelectOpen ? 'active' : ''}`}>
+          <button 
+            className={`filter-select ${isSelectOpen ? 'active' : ''}`} 
+            onClick={() => setIsSelectOpen(!isSelectOpen)}
+            data-select
+          >
             <div className="select-value" data-selecct-value>
               {filter}
             </div>
