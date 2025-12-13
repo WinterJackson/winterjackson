@@ -649,7 +649,7 @@ article.active {
   bottom: 0;
   left: 0;
   width: 100%;
-  z-index: 5;
+  z-index: 20;
 }
 
 .navbar-list {
@@ -1030,7 +1030,9 @@ article.active {
 }
 
 .testimonials-item-title { 
-  margin-bottom: 10px; 
+  margin-bottom: 10px;
+  margin-left: 80px; /* Space for avatar on mobile */
+  padding-top: 15px; /* Align with avatar top */
 }
 
 .testimonials-text {
