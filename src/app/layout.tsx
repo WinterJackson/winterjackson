@@ -1,5 +1,5 @@
 import { Providers } from '@/components/Providers'
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Poppins } from 'next/font/google'
 import Script from 'next/script'
 import { Toaster } from 'react-hot-toast'
@@ -12,6 +12,10 @@ const poppins = Poppins({
 })
 
 import { prisma } from '@/lib/prisma'
+
+export const viewport: Viewport = {
+  themeColor: '#212122',
+}
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await prisma.siteSettings.findFirst()
