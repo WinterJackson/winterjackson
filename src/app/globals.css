@@ -1723,9 +1723,8 @@ article.active {
 
 .github-btn,
 .demo-btn {
-  background: transparent;
+  background-color: rgba(0, 0, 0, 0.336);
   color: #ff0000;
-  border: 1px solid #ff0000;
 }
 
 .github-btn:hover,
