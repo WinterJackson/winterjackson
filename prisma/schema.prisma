@@ -71,7 +71,7 @@ model SiteSettings {
   metaDescription   String   @default("Portfolio of Winter Jackson")
   metaKeywords      String   @default("software, developer, portfolio")
   ogImageUrl        String   @default("")
-  navbarTitle       String   @default("Winter Jackson")
+  showResumeDownload Boolean  @default(true)
   logoUrl           String   @default("")
   footerText        String   @default("© 2024 Winter Jackson. All rights reserved.")
   showTestimonials  Boolean  @default(true)

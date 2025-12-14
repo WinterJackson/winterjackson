@@ -35,7 +35,7 @@ export default function AdminSettingsPage() {
       metaDescription: '',
       metaKeywords: '',
       ogImageUrl: '',
-      navbarTitle: 'Winter Jackson',
+      showResumeDownload: true,
       logoUrl: '',
       footerText: '© 2024 Winter Jackson. All rights reserved.',
       showTestimonials: true,
@@ -75,7 +75,7 @@ export default function AdminSettingsPage() {
         // even if DB is empty (first run).
         resetSettings({
             ...data,
-            navbarTitle: data.navbarTitle || 'Winter Jackson',
+            showResumeDownload: data.showResumeDownload ?? true,
             logoUrl: data.logoUrl || '',
             footerText: data.footerText || '© 2024 Winter Jackson. All rights reserved.',
             showTestimonials: data.showTestimonials ?? true,
@@ -173,14 +173,13 @@ export default function AdminSettingsPage() {
                         <h3 className={styles.sectionTitle}>Site Identity</h3>
                         <div className={styles.row}>
                             <div className={formStyles.group}>
-                                <label>Navbar Title</label>
-                                <input 
-                                    type="text" 
-                                    {...registerSettings('navbarTitle')} 
-                                    className={formStyles.input} 
-                                    placeholder="Winter Jackson"
-                                />
-                                {errorsSettings.navbarTitle && <span className="error">{errorsSettings.navbarTitle.message}</span>}
+                                <label className={formStyles.checkboxGroup}>
+                                    <input type="checkbox" {...registerSettings('showResumeDownload')} className={formStyles.checkbox} />
+                                    <span className={formStyles.checkboxLabel}>
+                                        Show "Download CV" Button
+                                    </span>
+                                </label>
+                                <p className={styles.helperText}>Toggle visibility of the resume download button on the public site.</p>
                             </div>
                             <div className={formStyles.group}>
                                 <label>Primary Color (Hex)</label>

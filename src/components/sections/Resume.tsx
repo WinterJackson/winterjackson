@@ -10,9 +10,10 @@ interface ResumeProps {
   educations: Education[]
   skills: Skill[]
   profile: Profile
+  showDownloadBtn?: boolean
 }
 
-export default function Resume({ isActive, experiences, educations, skills, profile }: ResumeProps) {
+export default function Resume({ isActive, experiences, educations, skills, profile, showDownloadBtn = true }: ResumeProps) {
   const [typedText, setTypedText] = useState('')
   const [shouldType, setShouldType] = useState(false)
   const skillsShowRef = useRef<HTMLDivElement>(null)
@@ -117,11 +118,13 @@ export default function Resume({ isActive, experiences, educations, skills, prof
       </section>
 
       {/* Download CV */}
-      <div className="download-div">
-        <a href={profile.cvUrl || "/docs/Winter Jackson CV.pdf"} download="Winter Jackson CV" className="download-btn">
-          Download CV
-        </a>
-      </div>
+      {showDownloadBtn && (
+        <div className="download-div">
+          <a href={profile.cvUrl || "/docs/Winter Jackson CV.pdf"} download="Winter Jackson CV" className="download-btn">
+            Download CV
+          </a>
+        </div>
+      )}
 
       {/* Skills */}
       <section className="hidden show skill">

@@ -84,6 +84,7 @@ export default function ClientHome({
             educations={educations}
             skills={skills}
             profile={profile}
+            showDownloadBtn={settings?.showResumeDownload ?? true}
           />
 
           {/* Portfolio/Projects Section */}

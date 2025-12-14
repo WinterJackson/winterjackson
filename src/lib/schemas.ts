@@ -24,7 +24,7 @@ export const SiteSettingsSchema = z.object({
     ogImageUrl: z.string().optional(),
 
     // Identity
-    navbarTitle: z.string().min(1, "Navbar Title is required"),
+    showResumeDownload: z.boolean(),
     logoUrl: z.string().optional(),
     footerText: z.string().min(1, "Footer Text is required"),
 
