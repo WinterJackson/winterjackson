@@ -201,6 +201,8 @@ section {
   color: white;
   max-width: 100%;
   position: relative;
+  white-space: nowrap; /* Prevent wrapping on mobile */
+  overflow-x: auto; /* Allow scroll if needed on tiny screens, though design is minimal */
 }
 
 .cc-text {

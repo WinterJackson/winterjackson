@@ -110,14 +110,25 @@ export const ProfileSchema = z.object({
     cvUrl: z.string().optional().or(z.literal('')),
 })
 
+// Password Change Schema
 export const PasswordChangeSchema = z.object({
     currentPassword: z.string().min(1, 'Current password is required'),
-    newPassword: z.string().min(6, 'New password must be at least 6 characters'),
-    confirmPassword: z.string().min(1, 'Please confirm new password'),
+    newPassword: z.string().min(6, 'Password must be at least 6 characters'),
+    confirmPassword: z.string().min(1, 'Please confirm your password')
 }).refine((data) => data.newPassword === data.confirmPassword, {
     message: "Passwords don't match",
     path: ["confirmPassword"],
 })
+
+export type PasswordChangeFormData = z.infer<typeof PasswordChangeSchema>
+
+// Email Change Schema
+export const EmailChangeSchema = z.object({
+    newEmail: z.string().email('Invalid email address'),
+    currentPassword: z.string().min(1, 'Current password is required to confirm changes'),
+})
+
+export type EmailChangeFormData = z.infer<typeof EmailChangeSchema>
 
 export type ServiceFormData = z.infer<typeof ServiceSchema>
 export type ProjectFormData = z.infer<typeof ProjectSchema>
@@ -128,4 +139,3 @@ export type TestimonialFormData = z.infer<typeof TestimonialSchema>
 export type ProfileFormData = z.infer<typeof ProfileSchema>
 export type SiteSettingsFormData = z.infer<typeof SiteSettingsSchema>
 export type ClientFormData = z.infer<typeof ClientSchema>
-export type PasswordChangeFormData = z.infer<typeof PasswordChangeSchema>

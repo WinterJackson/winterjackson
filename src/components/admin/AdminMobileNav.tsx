@@ -1,4 +1,5 @@
-import { ArrowLeft, ArrowRight } from 'lucide-react'
+import { ArrowLeft, ArrowRight, LogOut } from 'lucide-react'
+import { signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import styles from './AdminMobileNav.module.css'
 
@@ -7,6 +8,15 @@ export default function AdminMobileNav() {
 
   return (
     <div className={styles.nav}>
+      <button 
+        onClick={() => signOut()} 
+        className={styles.arrowBtn}
+        aria-label="Logout"
+        style={{ marginRight: '0px' }}
+      >
+        <LogOut size={20} />
+      </button>
+
       <button 
         onClick={() => router.back()} 
         className={styles.arrowBtn}

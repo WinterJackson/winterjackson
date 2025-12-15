@@ -1,6 +1,6 @@
 'use client'
 
-import { AlertCircle, ArrowLeft, Lock, LogIn, Mail } from 'lucide-react'
+import { AlertCircle, ArrowLeft, Eye, EyeOff, Lock, LogIn, Mail } from 'lucide-react'
 import { signIn, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -12,6 +12,7 @@ export default function AdminLoginPage() {
   const { data: session, status } = useSession()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   // Redirect if already logged in
   if (status === 'authenticated') {
@@ -94,14 +95,24 @@ export default function AdminLoginPage() {
                 <Lock />
                 Password
               </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                required
-                placeholder="••••••••"
-                autoComplete="current-password"
-              />
+              <div className={styles.passwordWrapper}>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  id="password"
+                  name="password"
+                  required
+                  placeholder="••••••••"
+                  autoComplete="current-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className={styles.passwordToggle}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
             </div>
 
             <button 

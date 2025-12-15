@@ -1,13 +1,14 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Globe, Key, Save, Settings, ToggleLeft, User } from 'lucide-react'
+import { Globe, Key, Mail, Save, Settings, ToggleLeft, User } from 'lucide-react'
+import { signOut } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 
 import ImageUpload from '@/components/admin/ImageUpload'
-import { PasswordChangeFormData, PasswordChangeSchema, SiteSettingsFormData, SiteSettingsSchema } from '@/lib/schemas'
+import { EmailChangeFormData, EmailChangeSchema, PasswordChangeFormData, PasswordChangeSchema, SiteSettingsFormData, SiteSettingsSchema } from '@/lib/schemas'
 
 import formStyles from '@/components/admin/AdminForm.module.css'
 import adminStyles from '@/components/admin/Shared.module.css'
@@ -44,6 +45,20 @@ export default function AdminSettingsPage() {
       contactEmail: 'winterjacksonwj@gmail.com',
       googleAnalyticsId: '',
       primaryColor: '#ff0000'
+    }
+  })
+
+  // Email Update Form
+  const {
+    register: registerEmail,
+    handleSubmit: handleSubmitEmail,
+    reset: resetEmail,
+    formState: { errors: errorsEmail, isSubmitting: isSubmittingEmail }
+  } = useForm<EmailChangeFormData>({
+    resolver: zodResolver(EmailChangeSchema),
+    defaultValues: {
+      newEmail: '',
+      currentPassword: ''
     }
   })
 
@@ -110,6 +125,32 @@ export default function AdminSettingsPage() {
     } catch (error) {
       console.error('Failed to update settings:', error)
       toast.error('Failed to update settings')
+    }
+  }
+
+  const onEmailSubmit = async (data: EmailChangeFormData) => {
+    try {
+      const res = await fetch('/api/auth/update-email', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+      
+      const result = await res.json()
+      
+      if (!res.ok) throw new Error(result.error || 'Failed to update email')
+      
+      toast.success('Email updated successfully! Please login again.')
+      resetEmail()
+      
+      // Force logout to ensure session consistency
+      setTimeout(() => {
+        signOut({ callbackUrl: '/admin/login' })
+      }, 2000)
+      
+    } catch (error: any) {
+      console.error('Failed to update email:', error)
+      toast.error(error.message || 'Failed to update email')
     }
   }
 
@@ -333,55 +374,104 @@ export default function AdminSettingsPage() {
 
         {/* Account Tab */}
         {activeTab === 'account' && (
-          <form onSubmit={handleSubmitPassword(onPasswordSubmit)} className={formStyles.form}>
-            <h3 className={styles.sectionTitle}>Change Password</h3>
-            
-            <div className={formStyles.group}>
-              <label>Current Password</label>
-              <input 
-                type="password" 
-                {...registerPassword('currentPassword')} 
-                className={formStyles.input} 
-              />
-              {errorsPassword.currentPassword && <span className="error">{errorsPassword.currentPassword.message}</span>}
-            </div>
+          <div className="flex flex-col gap-10">
+            {/* Change Email Form */}
+            <form onSubmit={handleSubmitEmail(onEmailSubmit)} className={formStyles.form}>
+              <h3 className={styles.sectionTitle}>Change Login Email</h3>
+              <p className={styles.description}>Update the email address you use to sign in to the admin panel.</p>
+              
+              <div className={formStyles.group}>
+                <label>New Email Address</label>
+                <input 
+                  type="email" 
+                  {...registerEmail('newEmail')} 
+                  className={formStyles.input} 
+                  placeholder="new-email@example.com"
+                />
+                {errorsEmail.newEmail && <span className="error">{errorsEmail.newEmail.message}</span>}
+              </div>
 
-            <div className={formStyles.group}>
-              <label>New Password</label>
-              <input 
-                type="password" 
-                {...registerPassword('newPassword')} 
-                className={formStyles.input} 
-              />
-              {errorsPassword.newPassword && <span className="error">{errorsPassword.newPassword.message}</span>}
-            </div>
+              <div className={formStyles.group}>
+                <label>Current Password</label>
+                <input 
+                  type="password" 
+                  {...registerEmail('currentPassword')} 
+                  className={formStyles.input} 
+                  placeholder="Required to confirm changes"
+                />
+                {errorsEmail.currentPassword && <span className="error">{errorsEmail.currentPassword.message}</span>}
+              </div>
 
-            <div className={formStyles.group}>
-              <label>Confirm New Password</label>
-              <input 
-                type="password" 
-                {...registerPassword('confirmPassword')} 
-                className={formStyles.input} 
-              />
-              {errorsPassword.confirmPassword && <span className="error">{errorsPassword.confirmPassword.message}</span>}
-            </div>
+              <div className="flex justify-end pt-4">
+                <button type="submit" className={formStyles.saveBtn} disabled={isSubmittingEmail}>
+                  {isSubmittingEmail ? (
+                     <>
+                       <span className={styles.loadingSpinner}></span>
+                       Updating Email...
+                     </>
+                  ) : (
+                    <>
+                      <Mail />
+                      Update Email
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
 
-            <div className="flex justify-end pt-4">
-              <button type="submit" className={formStyles.saveBtn} disabled={isSubmittingPassword}>
-                {isSubmittingPassword ? (
-                   <>
-                     <span className={styles.loadingSpinner}></span>
-                     Updating...
-                   </>
-                ) : (
-                  <>
-                    <Key />
-                    Update Password
-                  </>
-                )}
-              </button>
-            </div>
-          </form>
+            <hr className={styles.divider} />
+
+            {/* Change Password Form */}
+            <form onSubmit={handleSubmitPassword(onPasswordSubmit)} className={formStyles.form}>
+              <h3 className={styles.sectionTitle}>Change Password</h3>
+              
+              <div className={formStyles.group}>
+                <label>Current Password</label>
+                <input 
+                  type="password" 
+                  {...registerPassword('currentPassword')} 
+                  className={formStyles.input} 
+                />
+                {errorsPassword.currentPassword && <span className="error">{errorsPassword.currentPassword.message}</span>}
+              </div>
+
+              <div className={formStyles.group}>
+                <label>New Password</label>
+                <input 
+                  type="password" 
+                  {...registerPassword('newPassword')} 
+                  className={formStyles.input} 
+                />
+                {errorsPassword.newPassword && <span className="error">{errorsPassword.newPassword.message}</span>}
+              </div>
+
+              <div className={formStyles.group}>
+                <label>Confirm New Password</label>
+                <input 
+                  type="password" 
+                  {...registerPassword('confirmPassword')} 
+                  className={formStyles.input} 
+                />
+                {errorsPassword.confirmPassword && <span className="error">{errorsPassword.confirmPassword.message}</span>}
+              </div>
+
+              <div className="flex justify-end pt-4">
+                <button type="submit" className={formStyles.saveBtn} disabled={isSubmittingPassword}>
+                  {isSubmittingPassword ? (
+                     <>
+                       <span className={styles.loadingSpinner}></span>
+                       Updating Password...
+                     </>
+                  ) : (
+                    <>
+                      <Key />
+                      Update Password
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
         )}
       </div>
     </div>
