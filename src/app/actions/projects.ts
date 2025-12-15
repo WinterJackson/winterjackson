@@ -30,6 +30,7 @@ export async function createProject(data: any) {
             data: result.data
         })
         revalidatePath('/admin/projects')
+        revalidatePath('/admin') // Update Dashboard Stats
         revalidatePath('/') // Updates public portfolio
         return { success: true }
     } catch (error) {
@@ -54,6 +55,7 @@ export async function updateProject(id: string, data: any) {
             data: result.data
         })
         revalidatePath('/admin/projects')
+        revalidatePath('/admin') // Update Dashboard Stats
         revalidatePath('/')
         return { success: true }
     } catch (error) {
@@ -71,6 +73,7 @@ export async function deleteProject(id: string) {
             where: { id }
         })
         revalidatePath('/admin/projects')
+        revalidatePath('/admin') // Update Dashboard Stats
         revalidatePath('/')
         return { success: true }
     } catch (error) {

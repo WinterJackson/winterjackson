@@ -30,6 +30,7 @@ export async function POST(req: Request) {
         })
 
         revalidatePath('/')
+        revalidatePath('/admin')
 
         return NextResponse.json(client)
     } catch (error) {

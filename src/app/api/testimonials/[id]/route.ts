@@ -45,6 +45,7 @@ export async function PUT(
         })
 
         revalidatePath('/')
+        revalidatePath('/admin')
 
         return NextResponse.json(testimonial)
     } catch (error) {
@@ -69,6 +70,7 @@ export async function DELETE(
         })
 
         revalidatePath('/')
+        revalidatePath('/admin')
 
         return NextResponse.json({ success: true })
     } catch (error) {

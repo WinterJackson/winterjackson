@@ -46,6 +46,7 @@ export async function PUT(request: Request) {
         })
 
         revalidatePath('/')
+        revalidatePath('/admin')
 
         return NextResponse.json(profile)
     } catch (error) {

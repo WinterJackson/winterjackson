@@ -34,6 +34,7 @@ export async function POST(request: Request) {
         })
 
         revalidatePath('/')
+        revalidatePath('/admin')
 
         return NextResponse.json(testimonial, { status: 201 })
     } catch (error) {

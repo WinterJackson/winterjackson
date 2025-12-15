@@ -1,6 +1,7 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
+import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 
 const ContactSchema = z.object({
@@ -29,6 +30,7 @@ export async function submitContactMessage(formData: ContactFormData | unknown) 
             }
         })
 
+        revalidatePath('/admin') // Update Dashboard Inbox Count
         return { success: true }
     } catch (error) {
         console.error('Contact submission error:', error)
