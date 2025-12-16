@@ -6,8 +6,8 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     const settings = await prisma.siteSettings.findFirst()
 
     return {
-        name: settings?.metaTitle || 'Winter Jackson Portfolio',
-        short_name: 'Winter',
+        name: 'K U Z Z I - D E V',
+        short_name: 'K U Z Z I - D E V',
         description: settings?.metaDescription || 'Winter Jackson - Software Developer Portfolio',
         start_url: '/',
         display: 'standalone',
