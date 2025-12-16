@@ -14,9 +14,14 @@ export default function AdminLoginPage() {
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
 
+  // Prefetch admin dashboard for instant transition
+  useState(() => {
+    router.prefetch('/admin')
+  })
+
   // Redirect if already logged in
   if (status === 'authenticated') {
-    router.push('/admin')
+    router.replace('/admin')
     return null
   }
 
@@ -40,8 +45,12 @@ export default function AdminLoginPage() {
         setError('Invalid email or password')
         setLoading(false)
       } else if (result?.ok) {
-        router.push('/admin')
-        router.refresh()
+        // Successful login
+        setError('')
+        // Force hard redirect to ensure middleware re-runs and session is fully committed
+        // This is often more reliable than router.push for auth state changes
+        router.replace('/admin')
+        router.refresh() 
       } else {
         setError('Login failed. Please try again.')
         setLoading(false)
