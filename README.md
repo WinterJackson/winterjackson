@@ -1,21 +1,17 @@
-<h1 align="center">Hi 👋, I'm Winter Jackson</h1>
-<h3 align="center">A passionate Software Developer from Nairobi, Kenya 🇰🇪</h3>
+# Hi 👋, I'm Winter Jackson
+### A passionate Software Developer from Nairobi, Kenya 🇰🇪
 
-<p align="center">
-  <img src="https://komarev.com/ghpvc/?username=winterjackson&label=Profile%20views&color=0e75b6&style=flat" alt="winterjackson" />
-</p>
+<img src="https://komarev.com/ghpvc/?username=winterjackson&label=Profile%20views&color=0e75b6&style=flat" alt="winterjackson" />
 
-<p align="center">
-  <a href="https://winterjackson.vercel.app/" target="_blank">
-    <img src="https://img.shields.io/badge/Portfolio-FF5722?style=for-the-badge&logo=todoist&logoColor=white" alt="portfolio" />
-  </a>
-  <a href="mailto:winterjacksonwj@gmail.com">
-    <img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="email" />
-  </a>
-  <a href="tel:+254795213399">
-    <img src="https://img.shields.io/badge/Phone-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="phone" />
-  </a>
-</p>
+<a href="https://winterjackson.vercel.app/" target="_blank">
+  <img src="https://img.shields.io/badge/Portfolio-FF5722?style=for-the-badge&logo=todoist&logoColor=white" alt="portfolio" />
+</a>
+<a href="mailto:winterjacksonwj@gmail.com">
+  <img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="email" />
+</a>
+<a href="https://wa.me/254795213399" target="_blank">
+  <img src="https://img.shields.io/badge/WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="whatsapp" />
+</a>
 
 ---
 
@@ -67,22 +63,6 @@ I'm a **Software Developer** specializing in building modern, scalable web appli
 ![Figma](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)
 ![Heroku](https://img.shields.io/badge/Heroku-430098?style=for-the-badge&logo=heroku&logoColor=white)
 ![Jest](https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white)
-
----
-
-## 📊 GitHub Stats
-
-<p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=winterjackson&show_icons=true&theme=tokyonight&hide_border=true" alt="winterjackson's GitHub stats" />
-</p>
-
-<p align="center">
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=winterjackson&theme=tokyonight&hide_border=true" alt="winterjackson's streak stats" />
-</p>
-
-<p align="center">
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=winterjackson&layout=compact&theme=tokyonight&hide_border=true" alt="Top Languages" />
-</p>
 
 ---
 
@@ -173,29 +153,21 @@ Full-stack B2B web application modernizing the sales process for a wholesale mea
 
 I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision!
 
-<p align="center">
-  <a href="mailto:winterjacksonwj@gmail.com">
-    <img src="https://img.shields.io/badge/Email-winterjacksonwj@gmail.com-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email" />
-  </a>
-</p>
+<a href="mailto:winterjacksonwj@gmail.com">
+  <img src="https://img.shields.io/badge/Email-winterjacksonwj@gmail.com-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email" />
+</a>
 
-<p align="center">
-  <a href="tel:+254795213399">
-    <img src="https://img.shields.io/badge/Phone-+254_795_213_399-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="Phone" />
-  </a>
-</p>
+<a href="https://wa.me/254795213399" target="_blank">
+  <img src="https://img.shields.io/badge/WhatsApp-+254_795_213_399-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="WhatsApp" />
+</a>
 
-<p align="center">
-  <a href="https://winterjackson.vercel.app/" target="_blank">
-    <img src="https://img.shields.io/badge/Portfolio-Visit_My_Website-FF5722?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Portfolio" />
-  </a>
-</p>
+<a href="https://winterjackson.vercel.app/" target="_blank">
+  <img src="https://img.shields.io/badge/Portfolio-Visit_My_Website-FF5722?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Portfolio" />
+</a>
 
-<p align="center">
-  <a href="https://github.com/WinterJackson" target="_blank">
-    <img src="https://img.shields.io/badge/GitHub-Follow_Me-100000?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" />
-  </a>
-</p>
+<a href="https://github.com/WinterJackson" target="_blank">
+  <img src="https://img.shields.io/badge/GitHub-Follow_Me-100000?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" />
+</a>
 
 ---
 
