@@ -57,6 +57,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }),
     ],
     callbacks: {
+        async signIn({ user }) {
+            // Strictly enforce Admin email - completely block any unauthorized login attempt
+            if (user.email !== 'winterjacksonwj@gmail.com') {
+                console.warn(`Unauthorized login attempt from: ${user.email}`)
+                return false
+            }
+            return true
+        },
         async jwt({ token, user }) {
             if (user) {
                 token.id = user.id

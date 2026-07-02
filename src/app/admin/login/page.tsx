@@ -3,16 +3,25 @@
 import { AlertCircle, ArrowLeft, Eye, EyeOff, Lock, LogIn, Mail } from 'lucide-react'
 import { signIn, useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Suspense, useEffect, useState } from 'react'
 import styles from './Login.module.css'
 
-export default function AdminLoginPage() {
+function LoginFormContent() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { data: session, status } = useSession()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+
+  // Catch OAuth AccessDenied errors from the backend callback
+  useEffect(() => {
+    const urlError = searchParams.get('error')
+    if (urlError === 'AccessDenied') {
+      setError('Security Error: Unauthorized email address blocked.')
+    }
+  }, [searchParams])
 
   // Prefetch admin dashboard for instant transition
   useEffect(() => {
@@ -178,5 +187,13 @@ export default function AdminLoginPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function AdminLoginPage() {
+  return (
+    <Suspense fallback={<div className={styles.page}><span className="spinner"></span></div>}>
+      <LoginFormContent />
+    </Suspense>
   )
 }
