@@ -9,15 +9,15 @@ export async function getDashboardStats() {
     if (!session) throw new Error('Unauthorized')
 
     const [
-        projectsCount,
-        testimonialsCount,
+        activeProjectsCount,
+        activeTestimonialsCount,
         skillsCount,
         activeServicesCount,
         activeClientsCount,
         messagesCount
     ] = await Promise.all([
-        prisma.project.count(),
-        prisma.testimonial.count(),
+        prisma.project.count({ where: { isActive: true } }),
+        prisma.testimonial.count({ where: { isActive: true } }),
         prisma.skill.count(),
         prisma.service.count(),
         prisma.client.count({ where: { isActive: true } }),
@@ -25,8 +25,8 @@ export async function getDashboardStats() {
     ])
 
     return {
-        projects: projectsCount,
-        testimonials: testimonialsCount,
+        projects: activeProjectsCount,
+        testimonials: activeTestimonialsCount,
         skills: skillsCount,
         services: activeServicesCount,
         clients: activeClientsCount,
@@ -42,6 +42,9 @@ export async function getProfileHealth() {
     if (!profile) return 0
 
     const fieldsToCheck = [
+        'name',
+        'email',
+        'phone',
         'avatarUrl',
         'bio',
         'github',

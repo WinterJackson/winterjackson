@@ -1,6 +1,6 @@
 'use client'
 
-import { Briefcase, Code, Eye, MessageSquare, Users, Zap } from 'lucide-react'
+import { Briefcase, Code, Mail, MessageSquare, Users, Zap } from 'lucide-react'
 import Link from 'next/link'
 
 interface AnalyticsCardsProps {
@@ -17,12 +17,12 @@ interface AnalyticsCardsProps {
 
 export default function AnalyticsCards({ stats, styles }: AnalyticsCardsProps) {
   const cards = [
-    { label: 'Total Projects', value: stats.projects, icon: Code, color: '#8b5cf6', path: '/admin/projects' },
-    { label: 'Testimonials', value: stats.testimonials, icon: MessageSquare, color: '#10b981', path: '/admin/testimonials' },
+    { label: 'Active Projects', value: stats.projects, icon: Code, color: '#8b5cf6', path: '/admin/projects' },
+    { label: 'Active Testimonials', value: stats.testimonials, icon: MessageSquare, color: '#10b981', path: '/admin/testimonials' },
     { label: 'Total Services', value: stats.services, icon: Briefcase, color: '#f59e0b', path: '/admin/services' },
     { label: 'Active Clients', value: stats.clients, icon: Users, color: '#3b82f6', path: '/admin/clients' },
     { label: 'Total Skills', value: stats.skills, icon: Zap, color: '#eab308', path: '/admin/skills' },
-    { label: 'New Messages', value: stats.unreadMessages, icon: Eye, color: '#ec4899', path: '/admin/messages' },
+    { label: 'New Messages', value: stats.unreadMessages, icon: Mail, color: '#ec4899', path: '/admin/messages' },
   ]
 
   return (

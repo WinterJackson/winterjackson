@@ -12,7 +12,7 @@ interface ControlCenterProps {
   styles: Record<string, string>
 }
 
-type ToggleableKey = 'maintenanceMode' | 'showProjects' | 'showServices'
+type ToggleableKey = 'maintenanceMode' | 'showProjects' | 'showServices' | 'showTestimonials' | 'showResumeDownload'
 
 export default function ControlCenter({ settings, styles }: ControlCenterProps) {
   const [localSettings, setLocalSettings] = useState(settings)
@@ -60,6 +60,20 @@ export default function ControlCenter({ settings, styles }: ControlCenterProps) 
       icon: localSettings.showServices ? Eye : EyeOff, 
       color: '#f59e0b',
       desc: 'Show/Hide the Services section on public site.'
+    },
+    { 
+      key: 'showTestimonials', 
+      label: 'Show Testimonials', 
+      icon: localSettings.showTestimonials ? Eye : EyeOff, 
+      color: '#10b981',
+      desc: 'Show/Hide the Testimonials section on public site.'
+    },
+    { 
+      key: 'showResumeDownload', 
+      label: 'Resume Download', 
+      icon: localSettings.showResumeDownload ? Eye : EyeOff, 
+      color: '#3b82f6',
+      desc: 'Show/Hide the CV Download button on public site.'
     },
   ]
 
