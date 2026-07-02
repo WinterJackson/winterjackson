@@ -63,6 +63,7 @@ export default function AdminExperiencePage() {
       reset({
         jobTitle: editingItem.jobTitle,
         company: editingItem.company,
+        location: editingItem.location || '',
         startDate: editingItem.startDate,
         endDate: editingItem.endDate || '',
         description: editingItem.description,
@@ -72,6 +73,7 @@ export default function AdminExperiencePage() {
       reset({
         jobTitle: '',
         company: '',
+        location: '',
         startDate: '',
         endDate: '',
         description: '',
@@ -185,6 +187,10 @@ export default function AdminExperiencePage() {
               <label>Company</label>
               <input type="text" {...register('company')} className={formStyles.input} />
               {errors.company && <span className="text-red-500 text-xs">{errors.company.message}</span>}
+            </div>
+            <div className={formStyles.group}>
+              <label>Location</label>
+              <input type="text" {...register('location')} placeholder="e.g. Nairobi, Kenya" className={formStyles.input} />
             </div>
             <div className={formStyles.group}>
               <label>Order</label>

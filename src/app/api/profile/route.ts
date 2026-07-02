@@ -33,16 +33,16 @@ export async function PUT(request: Request) {
             )
         }
 
-        const { name, title, email, phone, altPhone, location, bio, avatarUrl, profileVideoUrl, github, linkedin, whatsapp, cvUrl } = result.data
+        const { name, title, email, phone, altPhone, location, bio, avatarUrl, profileVideoUrl, github, linkedin, whatsapp, cvUrl, professionalAmbition } = result.data
 
         const profile = await prisma.profile.upsert({
             where: { id: 'default-profile' },
             update: {
-                name, title, email, phone, altPhone, location, bio, avatarUrl, profileVideoUrl, github, linkedin, whatsapp, cvUrl
+                name, title, email, phone, altPhone, location, bio, avatarUrl, profileVideoUrl, github, linkedin, whatsapp, cvUrl, professionalAmbition
             },
             create: {
                 id: 'default-profile',
-                name, title, email, phone, altPhone, location, bio, avatarUrl, profileVideoUrl, github, linkedin, whatsapp, cvUrl
+                name, title, email, phone, altPhone, location, bio, avatarUrl, profileVideoUrl, github, linkedin, whatsapp, cvUrl, professionalAmbition
             }
         })
 

@@ -33,8 +33,21 @@ export async function POST(request: Request) {
             )
         }
 
-        const education = await prisma.education.create({
-            data: result.data,
+        const education = await prisma.$transaction(async (tx) => {
+            await tx.education.updateMany({
+                data: {
+                    order: {
+                        increment: 1
+                    }
+                }
+            })
+
+            return await tx.education.create({
+                data: {
+                    ...result.data,
+                    order: 1
+                },
+            })
         })
 
         revalidatePath('/')

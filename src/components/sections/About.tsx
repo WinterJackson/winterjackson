@@ -2,7 +2,7 @@ import { Profile, Service, Skill, Testimonial } from '@prisma/client'
 import { Linkedin, X } from 'lucide-react'
 import Image from 'next/image'
 import { useState } from 'react'
-import DOMPurify from 'isomorphic-dompurify'
+
 import dynamic from 'next/dynamic'
 import { languagesData, toolsData } from '@/lib/constants'
 
@@ -29,14 +29,21 @@ export default function About({ isActive, profile, testimonials, services, skill
         <h2 className="h2 article-title">About me</h2>
       </header>
 
-      <section className="hidden show about-text">
+      <section className="hidden show about-text mb-8">
+        <h3 className="text-sm font-semibold text-[var(--light-gray-70)] uppercase tracking-wider mb-4 border-b border-[var(--jet)] pb-2 inline-block">Bio</h3>
         <div dangerouslySetInnerHTML={{ 
-          __html: DOMPurify.sanitize(profile.bio.replace(/\n/g, '<br/>'), {
-            ALLOWED_TAGS: ['br', 'p', 'strong', 'em', 'a', 'span', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4'],
-            ALLOWED_ATTR: ['href', 'target', 'rel', 'class']
-          }) 
+          __html: profile.bio.replace(/\n/g, '<br/>')
         }} />
       </section>
+
+      {profile.professionalAmbition && (
+        <section className="hidden show about-text mb-10">
+          <h3 className="text-sm font-semibold text-[var(--light-gray-70)] uppercase tracking-wider mb-4 border-b border-[var(--jet)] pb-2 inline-block">Professional Ambition</h3>
+          <div dangerouslySetInnerHTML={{ 
+            __html: profile.professionalAmbition.replace(/\n/g, '<br/>')
+          }} />
+        </section>
+      )}
 
       {/* What I Do */}
       <section className="hidden show service">
@@ -65,52 +72,95 @@ export default function About({ isActive, profile, testimonials, services, skill
           <p>Below are some of the Languages and web development tools am well conversant with.</p>
         </div>
         <div className="slider-wrap">
-          <div className="slider-lang">
-            <div className="slider-title1">
+          <div style={{ position: 'relative', width: '100%', minWidth: 0 }}>
+            <div className="slider-title1" style={{ position: 'absolute', left: 0, top: '16px', zIndex: 10 }}>
               <p>Languages</p>
             </div>
-            {[0, 1].map((wrapIndex) => (
-              <div key={wrapIndex} className="languages-items-wrap">
-                {languagesData.map((lang, index) => (
-                  <div key={index} className="slider-item">
-                    <div className="slider-img-container">
-                      <Image 
-                        src={lang.icon} 
-                        alt={`${lang.name} logo`} 
-                        width={60} 
-                        height={60}
-                        style={{ objectFit: 'contain', width: '60px', height: '60px' }}
-                      />
-                    </div>
-                    <p>{lang.name}</p>
+            <div className="slider-lang">
+              <div style={{ minWidth: '85px', flexShrink: 0 }}></div>
+              <div style={{ display: 'flex', gap: '10px', position: 'relative' }}>
+                {[0, 1].map((wrapIndex) => (
+                  <div key={wrapIndex} className="languages-items-wrap">
+                    {languagesData.map((lang, index) => (
+                      <div key={index} className="slider-item">
+                        <div className="slider-img-container">
+                          <Image 
+                            src={lang.icon} 
+                            alt={`${lang.name} logo`} 
+                            width={60} 
+                            height={60}
+                            style={{ objectFit: 'contain', width: '60px', height: '60px' }}
+                          />
+                        </div>
+                        <p>{lang.name}</p>
+                      </div>
+                    ))}
                   </div>
                 ))}
-              </div>
-            ))}
-          </div>
-
-          <div className="slider-others">
-            <div className="slider-title2">
-              <p>Other tools</p>
-            </div>
-            {[0, 1].map((wrapIndex) => (
-              <div key={wrapIndex} className="others-items-wrap">
-                {toolsData.map((tool, index) => (
-                  <div key={index} className="slider-item">
-                    <div className="slider-img-container">
-                       <Image 
-                          src={tool.icon} 
-                          alt={`${tool.name} logo`} 
+                {/* Absolutely positioned 3rd copy to perfectly fill the visual void caused by CSS translation without extending the native scrollbar bounds */}
+                <div className="languages-items-wrap" style={{ position: 'absolute', top: 0, left: 'calc(100% + 10px)' }}>
+                  {languagesData.map((lang, index) => (
+                    <div key={`abs-${index}`} className="slider-item">
+                      <div className="slider-img-container">
+                        <Image 
+                          src={lang.icon} 
+                          alt={`${lang.name} logo`} 
                           width={60} 
                           height={60}
                           style={{ objectFit: 'contain', width: '60px', height: '60px' }}
                         />
+                      </div>
+                      <p>{lang.name}</p>
                     </div>
-                    <p>{tool.name}</p>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ position: 'relative', width: '100%', minWidth: 0 }}>
+            <div className="slider-title2" style={{ position: 'absolute', left: 0, top: '16px', zIndex: 10 }}>
+              <p>Other tools</p>
+            </div>
+            <div className="slider-others">
+              <div style={{ minWidth: '85px', flexShrink: 0 }}></div>
+              <div style={{ display: 'flex', gap: '10px', position: 'relative' }}>
+                {[0, 1].map((wrapIndex) => (
+                  <div key={wrapIndex} className="others-items-wrap">
+                    {toolsData.map((tool, index) => (
+                      <div key={index} className="slider-item">
+                        <div className="slider-img-container">
+                           <Image 
+                              src={tool.icon} 
+                              alt={`${tool.name} logo`} 
+                              width={60} 
+                              height={60}
+                              style={{ objectFit: 'contain', width: '60px', height: '60px' }}
+                            />
+                        </div>
+                        <p>{tool.name}</p>
+                      </div>
+                    ))}
                   </div>
                 ))}
+                <div className="others-items-wrap" style={{ position: 'absolute', top: 0, left: 'calc(100% + 10px)' }}>
+                  {toolsData.map((tool, index) => (
+                    <div key={`abs-${index}`} className="slider-item">
+                      <div className="slider-img-container">
+                         <Image 
+                            src={tool.icon} 
+                            alt={`${tool.name} logo`} 
+                            width={60} 
+                            height={60}
+                            style={{ objectFit: 'contain', width: '60px', height: '60px' }}
+                          />
+                      </div>
+                      <p>{tool.name}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </section>

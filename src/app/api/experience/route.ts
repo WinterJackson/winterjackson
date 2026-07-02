@@ -34,8 +34,21 @@ export async function POST(request: Request) {
             )
         }
 
-        const experience = await prisma.experience.create({
-            data: result.data,
+        const experience = await prisma.$transaction(async (tx) => {
+            await tx.experience.updateMany({
+                data: {
+                    order: {
+                        increment: 1
+                    }
+                }
+            })
+
+            return await tx.experience.create({
+                data: {
+                    ...result.data,
+                    order: 1
+                },
+            })
         })
 
         revalidatePath('/')

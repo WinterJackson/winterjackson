@@ -53,6 +53,7 @@ model Profile {
   cvUrl           String?
   updatedAt       DateTime @updatedAt
   profileVideoUrl String?
+  professionalAmbition String?
 }
 
 model Service {
@@ -117,6 +118,7 @@ model Experience {
   id          String   @id @default(cuid())
   jobTitle    String
   company     String
+  location    String?
   startDate   String
   endDate     String?
   description String
@@ -158,4 +160,24 @@ model Message {
   message   String
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
+}
+
+model Certification {
+  id          String   @id @default(cuid())
+  name        String
+  issuer      String
+  date        String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+model Referee {
+  id          String   @id @default(cuid())
+  name        String
+  role        String
+  company     String
+  phone       String
+  email       String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
 }

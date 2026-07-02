@@ -24,25 +24,29 @@ export default async function Home() {
   /* 
     Fetch all data in parallel for better performance 
   */
-  const [
-    profile, 
-    projects, 
-    services, 
-    experiences, 
-    educations, 
-    skills, 
-    testimonials, 
-    clients
-  ] = await Promise.all([
-    prisma.profile.findFirst({ where: { id: 'default-profile' } }).then(p => p || prisma.profile.findFirst()),
-    prisma.project.findMany({ where: { isActive: true }, orderBy: { order: 'asc' } }),
-    prisma.service.findMany({ orderBy: { order: 'asc' } }),
-    prisma.experience.findMany({ orderBy: { order: 'asc' } }),
-    prisma.education.findMany({ orderBy: { order: 'asc' } }),
-    prisma.skill.findMany({ orderBy: { order: 'asc' } }),
-    prisma.testimonial.findMany({ where: { isActive: true }, orderBy: { order: 'asc' } }),
-    prisma.client.findMany({ where: { isActive: true }, orderBy: { order: 'asc' } })
-  ])
+    const [
+      profile, 
+      projects, 
+      services, 
+      experiences, 
+      educations, 
+      skills, 
+      testimonials, 
+      clients,
+      certifications,
+      referees
+    ] = await Promise.all([
+      prisma.profile.findFirst({ where: { id: 'default-profile' } }).then(p => p || prisma.profile.findFirst()),
+      prisma.project.findMany({ where: { isActive: true }, orderBy: { order: 'asc' } }),
+      prisma.service.findMany({ orderBy: { order: 'asc' } }),
+      prisma.experience.findMany({ orderBy: { order: 'asc' } }),
+      prisma.education.findMany({ orderBy: { order: 'asc' } }),
+      prisma.skill.findMany({ orderBy: { order: 'asc' } }),
+      prisma.testimonial.findMany({ where: { isActive: true }, orderBy: { order: 'asc' } }),
+      prisma.client.findMany({ where: { isActive: true }, orderBy: { order: 'asc' } }),
+      prisma.certification.findMany({ orderBy: { order: 'asc' } }),
+      prisma.referee.findMany({ orderBy: { order: 'asc' } })
+    ])
 
   // Optionally fetch settings if needed for layout metadata, 
   // though typically metadata is handled in layout.tsx or generateMetadata.
@@ -62,6 +66,8 @@ export default async function Home() {
       skills={skills}
       testimonials={testimonials}
       clients={clients}
+      certifications={certifications}
+      referees={referees}
       settings={settings}
     />
   )

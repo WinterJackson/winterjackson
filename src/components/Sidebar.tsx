@@ -14,6 +14,16 @@ interface SidebarProps {
 export default function Sidebar({ profile }: SidebarProps) {
   const [isActive, setIsActive] = useState(false)
 
+  // Helper to enforce consistent phone formatting (e.g. +254 782 063 736)
+  const formatPhone = (phone: string) => {
+    if (!phone) return ''
+    const cleaned = phone.replace(/\s+/g, '')
+    if (cleaned.length === 13 && cleaned.startsWith('+')) {
+      return `${cleaned.slice(0, 4)} ${cleaned.slice(4, 7)} ${cleaned.slice(7, 10)} ${cleaned.slice(10)}`
+    }
+    return phone
+  }
+
   return (
     <aside className={`sidebar slide-in-right ${isActive ? 'active' : ''}`} data-sidebar>
       <div className="sidebar-info">
@@ -95,7 +105,7 @@ export default function Sidebar({ profile }: SidebarProps) {
             <div className="contact-info">
               <p className="contact-title">Phone</p>
               <a href={`tel:${profile.phone.replace(/\s+/g, '')}`} className="contact-link">
-                {profile.phone}
+                {formatPhone(profile.phone)}
               </a>
             </div>
           </li>
@@ -109,7 +119,7 @@ export default function Sidebar({ profile }: SidebarProps) {
               <div className="contact-info">
                 <p className="contact-title">Alt. Phone</p>
                 <a href={`tel:${profile.altPhone.replace(/\s+/g, '')}`} className="contact-link">
-                  {profile.altPhone}
+                  {formatPhone(profile.altPhone)}
                 </a>
               </div>
             </li>

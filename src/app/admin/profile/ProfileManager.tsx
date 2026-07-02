@@ -27,6 +27,7 @@ const ProfileSchema = z.object({
   github: z.string().optional(),
   linkedin: z.string().optional(),
   whatsapp: z.string().optional(),
+  professionalAmbition: z.string().optional(),
 })
 
 type ProfileFormData = z.infer<typeof ProfileSchema>
@@ -136,9 +137,15 @@ export default function ProfileManager() {
         </div>
 
         <div className={formStyles.group}>
-          <label>Bio</label>
+          <label>Bio (About Me)</label>
           <textarea {...register('bio')} className={formStyles.textarea} rows={5} />
           {errors.bio && <span className="error">{errors.bio.message}</span>}
+        </div>
+
+        <div className={formStyles.group}>
+          <label>Professional Ambition</label>
+          <textarea {...register('professionalAmbition')} className={formStyles.textarea} rows={5} placeholder="Write your professional ambition here..." />
+          {errors.professionalAmbition && <span className="error">{errors.professionalAmbition.message}</span>}
         </div>
 
         <hr className="my-6 border-gray-700" />

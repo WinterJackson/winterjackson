@@ -5,6 +5,12 @@ import { Profile } from '@prisma/client'
 import { Send } from 'lucide-react'
 import { ChangeEvent, useState } from 'react'
 import toast from 'react-hot-toast'
+import dynamic from 'next/dynamic'
+
+const MapClient = dynamic(() => import('@/components/MapClient'), {
+  ssr: false,
+  loading: () => <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255, 255, 255, 0.05)' }}>Loading map...</div>
+})
 
 interface ContactProps {
   isActive: boolean
@@ -57,18 +63,9 @@ export default function Contact({ isActive, profile }: ContactProps) {
         <h2 className="h2 article-title">Contact</h2>
       </header>
 
-      <section className="mapbox" data-mapbox style={{ opacity: 1, visibility: 'visible', display: 'block' }}>
-        <figure>
-          <iframe
-            src="https://www.openstreetmap.org/export/embed.html?bbox=36.65084838867188%2C-1.4468644557989504%2C37.10884094238281%2C-1.1245846171569486&layer=mapnik&marker=-1.285871781297127%2C36.8219455"
-            width="400"
-            height="300"
-            style={{ border: 0 }}
-            allowFullScreen
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            title="Map of Nairobi, Kenya"
-          ></iframe>
+      <section className="mapbox" data-mapbox style={{ opacity: 1, visibility: 'visible', display: 'block', height: '350px' }}>
+        <figure style={{ height: '100%' }}>
+          <MapClient location={profile?.location || 'Nairobi, Kenya'} />
         </figure>
       </section>
 

@@ -7,7 +7,7 @@ import Portfolio from '@/components/sections/Portfolio'
 import Resume from '@/components/sections/Resume'
 import Services from '@/components/sections/Services'
 import Sidebar from '@/components/Sidebar'
-import type { Client, Education, Experience, Profile, Project, Service, SiteSettings, Skill, Testimonial } from '@prisma/client'
+import type { Client, Education, Experience, Profile, Project, Service, SiteSettings, Skill, Testimonial, Certification, Referee } from '@prisma/client'
 import { useEffect, useState } from 'react'
 
 interface ClientHomeProps {
@@ -19,6 +19,8 @@ interface ClientHomeProps {
   skills: Skill[]
   testimonials: Testimonial[]
   clients: Client[]
+  certifications: Certification[]
+  referees: Referee[]
   settings: SiteSettings | null
 }
 
@@ -31,6 +33,8 @@ export default function ClientHome({
   skills, 
   testimonials,
   clients,
+  certifications,
+  referees,
   settings
 }: ClientHomeProps) {
   const [activePage, setActivePage] = useState('services')
@@ -84,6 +88,8 @@ export default function ClientHome({
             experiences={experiences}
             educations={educations}
             skills={skills}
+            certifications={certifications}
+            referees={referees}
             profile={profile}
             showDownloadBtn={settings?.showResumeDownload ?? true}
           />

@@ -69,6 +69,7 @@ export const EducationSchema = z.object({
 export const ExperienceSchema = z.object({
     jobTitle: z.string().min(1, 'Job title is required'),
     company: z.string().min(1, 'Company is required'),
+    location: z.string().optional().or(z.literal('')),
     startDate: z.string().min(1, 'Start date is required'),
     endDate: z.string().optional().or(z.literal('')),
     description: z.string().min(10, 'Description must be at least 10 characters'),
@@ -94,6 +95,22 @@ export const TestimonialSchema = z.object({
     order: z.number().int(),
 })
 
+export const CertificationSchema = z.object({
+    name: z.string().min(1, 'Name is required'),
+    issuer: z.string().min(1, 'Issuer is required'),
+    date: z.string().optional().or(z.literal('')),
+    order: z.number().int(),
+})
+
+export const RefereeSchema = z.object({
+    name: z.string().min(1, 'Name is required'),
+    role: z.string().min(1, 'Role is required'),
+    company: z.string().min(1, 'Company is required'),
+    phone: z.string().min(1, 'Phone is required'),
+    email: z.string().email('Invalid email').optional().or(z.literal('')),
+    order: z.number().int(),
+})
+
 export const ProfileSchema = z.object({
     name: z.string().min(1, 'Name is required'),
     title: z.string().min(1, 'Title is required'),
@@ -108,6 +125,7 @@ export const ProfileSchema = z.object({
     linkedin: z.string().optional().or(z.literal('')),
     whatsapp: z.string().optional().or(z.literal('')),
     cvUrl: z.string().optional().or(z.literal('')),
+    professionalAmbition: z.string().optional().or(z.literal('')),
 })
 
 // Password Change Schema
@@ -139,6 +157,8 @@ export type TestimonialFormData = z.infer<typeof TestimonialSchema>
 export type ProfileFormData = z.infer<typeof ProfileSchema>
 export type SiteSettingsFormData = z.infer<typeof SiteSettingsSchema>
 export type ClientFormData = z.infer<typeof ClientSchema>
+export type CertificationFormData = z.infer<typeof CertificationSchema>
+export type RefereeFormData = z.infer<typeof RefereeSchema>
 
 export const EnvVariablesSchema = z.object({
     DATABASE_URL: z.string().optional(),

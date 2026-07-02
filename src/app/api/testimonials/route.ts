@@ -7,7 +7,7 @@ import { NextResponse } from 'next/server'
 export async function GET() {
     try {
         const testimonials = await prisma.testimonial.findMany({
-            orderBy: { createdAt: 'desc' },
+            orderBy: { order: 'asc' },
         })
         return NextResponse.json(testimonials)
     } catch (error) {
@@ -26,11 +26,23 @@ export async function POST(request: Request) {
         const body = await request.json()
         const validatedData = TestimonialSchema.parse(body)
 
-        const testimonial = await prisma.testimonial.create({
-            data: {
-                ...validatedData,
-                isActive: validatedData.isActive ?? true,
-            },
+        // Perform transaction to shift all existing testimonials down by 1, and insert the new one at order: 1
+        const testimonial = await prisma.$transaction(async (tx) => {
+            await tx.testimonial.updateMany({
+                data: {
+                    order: {
+                        increment: 1
+                    }
+                }
+            })
+
+            return await tx.testimonial.create({
+                data: {
+                    ...validatedData,
+                    order: 1, // Force the new entry to be order 1
+                    isActive: validatedData.isActive ?? true,
+                },
+            })
         })
 
         revalidatePath('/')
