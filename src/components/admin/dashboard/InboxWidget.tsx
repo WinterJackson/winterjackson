@@ -16,7 +16,7 @@ interface Message {
 
 interface InboxWidgetProps {
   initialMessages: Message[]
-  styles: any
+  styles: Record<string, string>
 }
 
 export default function InboxWidget({ initialMessages, styles }: InboxWidgetProps) {

@@ -16,6 +16,7 @@ export default function Contact({ isActive, profile }: ContactProps) {
     fullname: '',
     email: '',
     message: '',
+    honeypot: '',
   })
   const [isValid, setIsValid] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -41,7 +42,7 @@ export default function Contact({ isActive, profile }: ContactProps) {
 
     if (res.success) {
       toast.success('Message sent successfully!')
-      setFormData({ fullname: '', email: '', message: '' })
+      setFormData({ fullname: '', email: '', message: '', honeypot: '' })
       setIsValid(false)
     } else {
       toast.error(res.error || 'Failed to send message')
@@ -64,7 +65,7 @@ export default function Contact({ isActive, profile }: ContactProps) {
             height="300"
             style={{ border: 0 }}
             allowFullScreen
-            loading="eager"
+            loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
             title="Map of Nairobi, Kenya"
           ></iframe>
@@ -100,6 +101,17 @@ export default function Contact({ isActive, profile }: ContactProps) {
               value={formData.email}
               onChange={handleInputChange}
               data-form-input
+            />
+            
+            {/* Honeypot field - hidden from users but readable by bots */}
+            <input
+              type="text"
+              name="honeypot"
+              style={{ display: 'none' }}
+              value={formData.honeypot}
+              onChange={handleInputChange}
+              tabIndex={-1}
+              autoComplete="off"
             />
 
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { deleteMessage, getMessages, markMessageRead } from '@/app/actions/dashboard'
+import { deleteMessage, getMessages, markMessageRead, markAllMessagesRead } from '@/app/actions/dashboard'
 import { ArrowLeft, MailOpen, Reply, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
@@ -21,23 +21,22 @@ export default function MessagesPage() {
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    loadMessages()
-  }, [])
-
   const loadMessages = async () => {
     setLoading(true)
     try {
       const data = await getMessages()
-      // @ts-ignore - prisma dates might need conversion if passed from server action directly 
-      // but assuming Server Actions serialize dates fine or we get simple objects
-      setMessages(data)
+      setMessages(JSON.parse(JSON.stringify(data)))
     } catch (error) {
       toast.error('Failed to load messages')
     } finally {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadMessages()
+  }, [])
 
   const handleSelect = async (msg: Message) => {
     setSelectedId(msg.id)
@@ -46,6 +45,21 @@ export default function MessagesPage() {
       setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, isRead: true } : m))
       // No toast for auto-read on open, cleaner UX
     }
+  }
+
+  const handleMarkAllRead = async () => {
+    const unreadCount = messages.filter(m => !m.isRead).length
+    if (unreadCount === 0) return
+
+    setLoading(true)
+    const res = await markAllMessagesRead()
+    if (res.success) {
+      setMessages(prev => prev.map(m => ({ ...m, isRead: true })))
+      toast.success('All messages marked as read')
+    } else {
+      toast.error('Failed to mark messages as read')
+    }
+    setLoading(false)
   }
 
   const handleDelete = async (id: string, e?: React.MouseEvent) => {
@@ -79,6 +93,21 @@ export default function MessagesPage() {
             <p style={{ color: 'var(--light-gray)', fontSize: 'var(--fs-6)' }}>Manage your client inquiries</p>
          </div>
          {/* Could add a 'Mark all read' button here later */}
+         <button 
+           onClick={handleMarkAllRead}
+           disabled={loading || messages.filter(m => !m.isRead).length === 0}
+           style={{
+             background: 'var(--onyx)',
+             border: '1px solid var(--jet)',
+             color: 'var(--light-gray)',
+             padding: '8px 16px',
+             borderRadius: '8px',
+             cursor: (loading || messages.filter(m => !m.isRead).length === 0) ? 'not-allowed' : 'pointer',
+             opacity: (loading || messages.filter(m => !m.isRead).length === 0) ? 0.5 : 1
+           }}
+         >
+           Mark all read
+         </button>
       </div>
 
       <div className={styles.container}>

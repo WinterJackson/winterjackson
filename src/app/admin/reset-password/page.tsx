@@ -4,14 +4,14 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { ArrowLeft, CheckCircle2, Eye, EyeOff, Lock } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Suspense, useState } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { z } from 'zod'
 import styles from '../login/Login.module.css'
 
 const ResetPasswordSchema = z.object({
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
   confirmPassword: z.string().min(1, 'Please confirm your password'),
 }).refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
@@ -42,7 +42,7 @@ function ResetForm() {
   })
 
   // Validate Token on Load
-  useState(() => {
+  useEffect(() => {
      const checkToken = async () => {
          if (!token || !email) {
              setIsValidating(false)
@@ -63,8 +63,9 @@ function ResetForm() {
      }
      
      if (token && email) checkToken()
+     // eslint-disable-next-line react-hooks/set-state-in-effect
      else setIsValidating(false)
-  })
+  }, [token, email])
 
   const onSubmit = async (data: ResetPasswordData) => {
       if (!token || !email) {
@@ -94,9 +95,10 @@ function ResetForm() {
              router.push('/admin/login') 
           }, 3000)
 
-      } catch (error: any) {
+      } catch (error: unknown) {
           console.error(error)
-          toast.error(error.message || 'Something went wrong')
+          const message = error instanceof Error ? error.message : 'Something went wrong'
+          toast.error(message)
       }
   }
 

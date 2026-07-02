@@ -1,7 +1,7 @@
 'use client'
 
 import { CloudUpload, Video } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useId } from 'react'
 import styles from './ImageUpload.module.css'
 
 interface VideoUploadProps {
@@ -18,6 +18,7 @@ export default function VideoUpload({
   label = 'Upload Video'
 }: VideoUploadProps) {
   const [uploading, setUploading] = useState(false)
+  const id = useId()
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -61,7 +62,7 @@ export default function VideoUpload({
           onChange={handleFileChange}
           disabled={disabled || uploading}
           className="hidden"
-          id="video-upload"
+          id={id}
         />
         
         {value ? (
@@ -73,14 +74,14 @@ export default function VideoUpload({
               style={{ maxHeight: '200px' }}
             />
             <div className={styles.overlay}>
-              <label htmlFor="video-upload" className={styles.changeBtn}>
+              <label htmlFor={id} className={styles.changeBtn}>
                 <CloudUpload />
                 Change Video
               </label>
             </div>
           </div>
         ) : (
-          <label htmlFor="video-upload" className={styles.placeholder} style={{ cursor: 'pointer' }}>
+          <label htmlFor={id} className={styles.placeholder} style={{ cursor: 'pointer' }}>
             <div className={styles.iconWrapper}>
               <Video className={styles.icon} />
             </div>

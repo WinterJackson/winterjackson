@@ -4,7 +4,7 @@ import { AlertCircle, CheckCircle2, Trophy } from 'lucide-react'
 
 interface ProfileHealthProps {
   score: number
-  styles: any
+  styles: Record<string, string>
 }
 
 export default function ProfileHealth({ score, styles }: ProfileHealthProps) {

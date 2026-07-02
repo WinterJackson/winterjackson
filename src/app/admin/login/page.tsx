@@ -55,7 +55,7 @@ export default function AdminLoginPage() {
         setLoading(false)
       }
     } catch (error) {
-      console.error('Login error:', error)
+      console.error('Login encountered an unexpected error.')
       setError('An error occurred. Please try again.')
       setLoading(false)
     }

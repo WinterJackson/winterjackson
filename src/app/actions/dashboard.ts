@@ -52,9 +52,10 @@ export async function getProfileHealth() {
     ]
 
     let completed = 0
+    const profileRecord = profile as Record<string, unknown>
     fieldsToCheck.forEach(field => {
-        // @ts-ignore
-        if (profile[field] && profile[field].length > 0) {
+        const value = profileRecord[field]
+        if (typeof value === 'string' && value.length > 0) {
             completed++
         }
     })
@@ -137,6 +138,22 @@ export async function markMessageRead(id: string) {
         return { success: true }
     } catch (error) {
         return { success: false, error: 'Failed to mark read' }
+    }
+}
+
+export async function markAllMessagesRead() {
+    const session = await auth()
+    if (!session) return { success: false, error: 'Unauthorized' }
+
+    try {
+        await prisma.message.updateMany({
+            where: { isRead: false },
+            data: { isRead: true }
+        })
+        revalidatePath('/admin')
+        return { success: true }
+    } catch (error) {
+        return { success: false, error: 'Failed to mark all as read' }
     }
 }
 

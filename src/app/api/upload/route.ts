@@ -10,6 +10,31 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'No file provided' }, { status: 400 })
         }
 
+        const MAX_IMAGE_SIZE = 10 * 1024 * 1024 // 10MB
+        const MAX_VIDEO_SIZE = 50 * 1024 * 1024 // 50MB
+
+        const allowedImageTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml']
+        const allowedVideoTypes = ['video/mp4', 'video/webm', 'video/ogg']
+        const allowedMimeTypes = [...allowedImageTypes, ...allowedVideoTypes]
+
+        if (!allowedMimeTypes.includes(file.type)) {
+            return NextResponse.json(
+                { error: `Invalid file type: ${file.type}. Only images and videos are allowed.` },
+                { status: 415 }
+            )
+        }
+
+        const isVideo = allowedVideoTypes.includes(file.type)
+        const maxSize = isVideo ? MAX_VIDEO_SIZE : MAX_IMAGE_SIZE
+        const maxLabel = isVideo ? '50MB' : '10MB'
+
+        if (file.size > maxSize) {
+            return NextResponse.json(
+                { error: `File size exceeds ${maxLabel} limit` },
+                { status: 413 }
+            )
+        }
+
         // Authenticate User
         const session = await auth()
         if (!session) {

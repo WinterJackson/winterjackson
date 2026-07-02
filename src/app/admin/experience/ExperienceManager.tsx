@@ -38,7 +38,23 @@ export default function AdminExperiencePage() {
     }
   })
 
+  const fetchExperiences = async () => {
+    try {
+      const res = await fetch('/api/experience')
+      if (res.ok) {
+        const data = await res.json()
+        setExperiences(data)
+      }
+    } catch (error) {
+      console.error('Failed to fetch experiences:', error)
+      toast.error('Failed to load experiences')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchExperiences()
   }, [])
 
@@ -63,21 +79,6 @@ export default function AdminExperiencePage() {
       })
     }
   }, [editingItem, reset])
-
-  const fetchExperiences = async () => {
-    try {
-      const res = await fetch('/api/experience')
-      if (res.ok) {
-        const data = await res.json()
-        setExperiences(data)
-      }
-    } catch (error) {
-      console.error('Failed to fetch experiences:', error)
-      toast.error('Failed to load experiences')
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const onSubmit = async (data: ExperienceFormData) => {
     try {

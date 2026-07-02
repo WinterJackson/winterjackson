@@ -37,7 +37,23 @@ export default function AdminServicesPage() {
     }
   })
 
+  const fetchServices = async () => {
+    try {
+      const res = await fetch('/api/services')
+      if (res.ok) {
+        const data = await res.json()
+        setServices(data)
+      }
+    } catch (error) {
+      console.error('Failed to fetch services:', error)
+      toast.error('Failed to load services')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchServices()
   }, [])
 
@@ -60,21 +76,6 @@ export default function AdminServicesPage() {
       })
     }
   }, [editingItem, reset])
-
-  const fetchServices = async () => {
-    try {
-      const res = await fetch('/api/services')
-      if (res.ok) {
-        const data = await res.json()
-        setServices(data)
-      }
-    } catch (error) {
-      console.error('Failed to fetch services:', error)
-      toast.error('Failed to load services')
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const onSubmit = async (data: ServiceFormData) => {
     try {

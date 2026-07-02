@@ -1,7 +1,9 @@
 import { auth } from '@/lib/auth'
-import prisma from '@/lib/prisma'
+import { prisma } from '@/lib/prisma'
+import { ServiceSchema } from '@/lib/schemas'
 import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
+import { z } from 'zod'
 
 export async function PUT(
     request: Request,
@@ -15,11 +17,12 @@ export async function PUT(
 
         const { id } = await params
         const body = await request.json()
-        const { title, description, iconUrl, order } = body
+        
+        const validatedData = ServiceSchema.parse(body)
 
         const service = await prisma.service.update({
             where: { id },
-            data: { title, description, iconUrl, order },
+            data: validatedData,
         })
 
         revalidatePath('/')
@@ -28,6 +31,9 @@ export async function PUT(
         return NextResponse.json(service)
     } catch (error) {
         console.error('Failed to update service:', error)
+        if (error instanceof z.ZodError) {
+            return NextResponse.json({ error: error.issues[0]?.message || 'Invalid input' }, { status: 400 })
+        }
         return NextResponse.json({ error: 'Failed to update service' }, { status: 500 })
     }
 }

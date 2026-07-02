@@ -38,7 +38,23 @@ export default function AdminEducationPage() {
     }
   })
 
+  const fetchEducations = async () => {
+    try {
+      const res = await fetch('/api/education')
+      if (res.ok) {
+        const data = await res.json()
+        setEducations(data)
+      }
+    } catch (error) {
+      console.error('Failed to fetch education:', error)
+      toast.error('Failed to load education')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchEducations()
   }, [])
 
@@ -63,21 +79,6 @@ export default function AdminEducationPage() {
       })
     }
   }, [editingItem, reset])
-
-  const fetchEducations = async () => {
-    try {
-      const res = await fetch('/api/education')
-      if (res.ok) {
-        const data = await res.json()
-        setEducations(data)
-      }
-    } catch (error) {
-      console.error('Failed to fetch education:', error)
-      toast.error('Failed to load education')
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const onSubmit = async (data: EducationFormData) => {
     try {

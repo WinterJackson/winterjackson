@@ -1,7 +1,9 @@
 import { auth } from '@/lib/auth'
-import prisma from '@/lib/prisma'
+import { prisma } from '@/lib/prisma'
+import { EducationSchema } from '@/lib/schemas'
 import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
+import { z } from 'zod'
 
 export async function PUT(
     request: Request,
@@ -15,18 +17,22 @@ export async function PUT(
 
         const { id } = await params
         const body = await request.json()
-        const { institution, degree, field, startDate, endDate, order } = body
+        const validatedData = EducationSchema.parse(body)
 
         const education = await prisma.education.update({
             where: { id },
-            data: { institution, degree, field, startDate, endDate, order },
+            data: validatedData,
         })
 
         revalidatePath('/')
+        revalidatePath('/admin')
 
         return NextResponse.json(education)
     } catch (error) {
         console.error('Failed to update education:', error)
+        if (error instanceof z.ZodError) {
+            return NextResponse.json({ error: error.issues[0]?.message || 'Invalid input' }, { status: 400 })
+        }
         return NextResponse.json({ error: 'Failed to update education' }, { status: 500 })
     }
 }
@@ -47,6 +53,7 @@ export async function DELETE(
         })
 
         revalidatePath('/')
+        revalidatePath('/admin')
 
         return NextResponse.json({ success: true })
     } catch (error) {

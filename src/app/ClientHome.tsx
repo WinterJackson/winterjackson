@@ -37,6 +37,7 @@ export default function ClientHome({
   const [currentYear, setCurrentYear] = useState(2024)
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentYear(new Date().getFullYear())
   }, [])
 

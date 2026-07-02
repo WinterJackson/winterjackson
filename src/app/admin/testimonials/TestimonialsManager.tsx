@@ -168,6 +168,8 @@ export default function AdminTestimonialsPage() {
     }
   ]
 
+  const avatarUrl = watch('avatarUrl')
+
   return (
     <div className={adminStyles.page}>
       <header className={adminStyles.pageHeader}>
@@ -233,7 +235,7 @@ export default function AdminTestimonialsPage() {
 
           <div className={formStyles.group}>
             <ImageUpload 
-              value={watch('avatarUrl') || ''} 
+              value={avatarUrl || ''} 
               onChange={(url) => setValue('avatarUrl', url)} 
               label="Avatar Image"
             />

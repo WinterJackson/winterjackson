@@ -9,12 +9,18 @@ import tooltipStyles from '../Tooltips.module.css'
 
 interface ControlCenterProps {
   settings: SiteSettings | null
-  styles: any
+  styles: Record<string, string>
 }
+
+type ToggleableKey = 'maintenanceMode' | 'showProjects' | 'showServices'
 
 export default function ControlCenter({ settings, styles }: ControlCenterProps) {
   const [localSettings, setLocalSettings] = useState(settings)
   const [loading, setLoading] = useState<string | null>(null)
+
+  const getToggleValue = (key: ToggleableKey): boolean => {
+    return localSettings ? Boolean(localSettings[key]) : false
+  }
 
   const handleToggle = async (key: string, currentValue: boolean) => {
     setLoading(key)
@@ -80,11 +86,11 @@ export default function ControlCenter({ settings, styles }: ControlCenterProps) 
             </div>
 
             <div 
-               onClick={() => handleToggle(control.key, (localSettings as any)[control.key])}
+               onClick={() => handleToggle(control.key, getToggleValue(control.key as ToggleableKey))}
                style={{ 
                  width: '40px', 
                  height: '24px', 
-                 background: (localSettings as any)[control.key] ? 'var(--bittersweet-shimmer)' : 'var(--jet)', 
+                 background: getToggleValue(control.key as ToggleableKey) ? 'var(--bittersweet-shimmer)' : 'var(--jet)', 
                  borderRadius: '20px', 
                  position: 'relative',
                  cursor: 'pointer',
@@ -98,7 +104,7 @@ export default function ControlCenter({ settings, styles }: ControlCenterProps) 
                   borderRadius: '50%',
                   position: 'absolute',
                   top: '3px',
-                  left: (localSettings as any)[control.key] ? '19px' : '3px',
+                  left: getToggleValue(control.key as ToggleableKey) ? '19px' : '3px',
                   transition: '0.3s'
                }} />
             </div>

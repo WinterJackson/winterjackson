@@ -1,12 +1,12 @@
 import { auth } from '@/lib/auth'
-import prisma from '@/lib/prisma'
+import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
 const PasswordSchema = z.object({
     currentPassword: z.string().min(1, 'Current password is required'),
-    newPassword: z.string().min(6, 'New password must be at least 6 characters'),
+    newPassword: z.string().min(8, 'New password must be at least 8 characters'),
 })
 
 export async function PUT(req: Request) {

@@ -1,10 +1,11 @@
 import { auth } from '@/lib/auth'
-import prisma from '@/lib/prisma'
+import { prisma } from '@/lib/prisma'
 import { ProfileSchema } from '@/lib/schemas'
 import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
+    // Intentionally public: Profile data is needed for the main portfolio page.
     try {
         const profile = await prisma.profile.findFirst()
         return NextResponse.json(profile)

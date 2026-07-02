@@ -16,7 +16,7 @@ export async function getProjects() {
 }
 
 // CREATE
-export async function createProject(data: any) {
+export async function createProject(data: unknown) {
     const session = await auth()
     if (!session) return { success: false, error: 'Unauthorized' }
 
@@ -40,7 +40,7 @@ export async function createProject(data: any) {
 }
 
 // UPDATE
-export async function updateProject(id: string, data: any) {
+export async function updateProject(id: string, data: unknown) {
     const session = await auth()
     if (!session) return { success: false, error: 'Unauthorized' }
 

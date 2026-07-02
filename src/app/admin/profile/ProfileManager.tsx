@@ -44,7 +44,7 @@ export default function ProfileManager() {
         const data = await res.json()
         if (data) {
           Object.keys(data).forEach(key => {
-            setValue(key as any, data[key] || '')
+            setValue(key as keyof ProfileFormData, data[key] || '')
           })
         }
       } catch (error) {
@@ -169,7 +169,7 @@ export default function ProfileManager() {
             label="Resume / CV (PDF)"
             resourceType="raw"
           />
-          <p className="text-xs text-gray-500 mt-1">Upload your latest CV (PDF format). This will be linked to the "Download CV" button.</p>
+          <p className="text-xs text-gray-500 mt-1">Upload your latest CV (PDF format). This will be linked to the &quot;Download CV&quot; button.</p>
         </div>
 
         <hr className="my-6 border-gray-700" />

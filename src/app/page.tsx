@@ -2,7 +2,7 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import ClientHome from './ClientHome'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 60
 
 export default async function Home() {
   const session = await auth()
@@ -14,7 +14,7 @@ export default async function Home() {
         <div className="text-center max-w-md">
           <h1 className="text-4xl font-bold mb-4 text-[#FFDB70]">Under Maintenance</h1>
           <p className="text-gray-300">
-            I'm currently updating my portfolio. Please check back soon.
+            I&apos;m currently updating my portfolio. Please check back soon.
           </p>
         </div>
       </div>

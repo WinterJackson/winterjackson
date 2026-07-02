@@ -2,6 +2,7 @@ import { Providers } from '@/components/Providers'
 import type { Metadata, Viewport } from 'next'
 import { Poppins } from 'next/font/google'
 import { Toaster } from 'react-hot-toast'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 import './globals.css'
 
 const poppins = Poppins({
@@ -62,6 +63,9 @@ export default async function RootLayout({
         <Providers>
           {children}
         </Providers>
+        {settings?.googleAnalyticsId && (
+          <GoogleAnalytics gaId={settings.googleAnalyticsId} />
+        )}
         <Toaster position="bottom-right" toastOptions={{
           style: {
             background: '#333',

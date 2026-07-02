@@ -3,33 +3,30 @@
 import { Project } from '@prisma/client'
 import { ChevronDown, Eye } from 'lucide-react'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 interface PortfolioProps {
   isActive: boolean
   projects: Project[]
 }
 
-const filters = ['All', 'Applications', 'Web development', 'Personal projects']
-
 export default function Portfolio({ isActive, projects }: PortfolioProps) {
+  // Dynamically generate unique filter categories from the actual active projects
+  const uniqueCategories = Array.from(new Set(projects.map((p: Project) => p.category.toLowerCase())))
+  const filters = ['All', ...uniqueCategories.map((c: string) => c.charAt(0).toUpperCase() + c.slice(1))]
+
   const [filter, setFilter] = useState('All')
-  const [filteredProjects, setFilteredProjects] = useState<Project[]>(projects)
   const [hoveredProject, setHoveredProject] = useState<string | null>(null)
   const [isSelectOpen, setIsSelectOpen] = useState(false)
 
-  useEffect(() => {
-    if (filter === 'All') {
-      setFilteredProjects(projects)
-    } else {
-      setFilteredProjects(projects.filter((project) => {
+  const filteredProjects = filter === 'All' 
+    ? projects 
+    : projects.filter((project: Project) => {
         const filterLower = filter.toLowerCase()
         const categoryMatch = project.category.toLowerCase() === filterLower
-        const categoriesMatch = project.categories?.some(cat => cat.toLowerCase() === filterLower)
+        const categoriesMatch = project.categories?.some((cat: string) => cat.toLowerCase() === filterLower)
         return categoryMatch || categoriesMatch
-      }))
-    }
-  }, [filter, projects])
+      })
 
   const handleFilterClick = (category: string) => {
     setFilter(category)
@@ -63,7 +60,7 @@ export default function Portfolio({ isActive, projects }: PortfolioProps) {
             onClick={() => setIsSelectOpen(!isSelectOpen)}
             data-select
           >
-            <div className="select-value" data-selecct-value>
+            <div className="select-value" data-select-value>
               {filter}
             </div>
             <div className="select-icon">
@@ -112,18 +109,20 @@ export default function Portfolio({ isActive, projects }: PortfolioProps) {
               </a>
               
               {/* GitHub and Demo Buttons */}
-              <div className="project-links">
-                {project.githubUrl && (
-                  <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="project-link-btn github-btn">
-                    Github
-                  </a>
-                )}
-                {project.demoUrl && (
-                  <a href={project.demoUrl} target="_blank" rel="noopener noreferrer" className="project-link-btn demo-btn">
-                    Demo
-                  </a>
-                )}
-              </div>
+              {(project.githubUrl || project.demoUrl) && (
+                <div className="project-links">
+                  {project.githubUrl && (
+                    <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="project-link-btn github-btn">
+                      Github
+                    </a>
+                  )}
+                  {project.demoUrl && (
+                    <a href={project.demoUrl} target="_blank" rel="noopener noreferrer" className="project-link-btn demo-btn">
+                      Demo
+                    </a>
+                  )}
+                </div>
+              )}
 
               {/* Project Description on Hover */}
               {project.description && (

@@ -1,5 +1,5 @@
 import { auth } from '@/lib/auth'
-import prisma from '@/lib/prisma'
+import { prisma } from '@/lib/prisma'
 import { EmailChangeSchema } from '@/lib/schemas'
 import bcrypt from 'bcryptjs'
 import { NextResponse } from 'next/server'

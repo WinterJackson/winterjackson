@@ -7,6 +7,38 @@ import path from 'path'
 
 const ENV_PATH = path.join(process.cwd(), '.env')
 
+// Keys that are safe to display and edit from the admin UI
+const ALLOWED_KEYS = new Set([
+    'DATABASE_URL',
+    'NEXTAUTH_URL',
+    'AUTH_SECRET',
+    'GOOGLE_CLIENT_ID',
+    'GOOGLE_CLIENT_SECRET',
+    'NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME',
+    'NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET',
+    'SMTP_HOST',
+    'SMTP_PORT',
+    'SMTP_USER',
+    'SMTP_PASSWORD'
+])
+
+// Keys whose values must be masked in GET responses to prevent secret leakage
+const SENSITIVE_KEY_PATTERNS = ['SECRET', 'PASSWORD', 'TOKEN', 'DATABASE_URL']
+
+/**
+ * Masks a sensitive value for safe display in the admin UI.
+ * Shows only the first 4 and last 4 characters for long values.
+ */
+function maskSensitiveValue(key: string, value: string): string {
+    const isSensitive = SENSITIVE_KEY_PATTERNS.some(pattern => key.toUpperCase().includes(pattern))
+    if (!isSensitive || !value) return value
+
+    if (value.length <= 12) {
+        return '***REDACTED***'
+    }
+    return `${value.slice(0, 4)}***REDACTED***${value.slice(-4)}`
+}
+
 export async function GET() {
     const session = await auth()
     if (!session?.user?.email) {
@@ -37,20 +69,11 @@ export async function GET() {
             }
         })
 
-        // Filter to only return the keys we care about in the UI
-        const targetKeys = [
-            'DATABASE_URL',
-            'NEXTAUTH_URL',
-            'AUTH_SECRET',
-            'GOOGLE_CLIENT_ID',
-            'GOOGLE_CLIENT_SECRET',
-            'NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME',
-            'NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET'
-        ]
-
+        // Filter to only return allowed keys, and mask sensitive values
         const filteredEnvs: Record<string, string> = {}
-        targetKeys.forEach(key => {
-            filteredEnvs[key] = envs[key] || ''
+        ALLOWED_KEYS.forEach(key => {
+            const rawValue = envs[key] || ''
+            filteredEnvs[key] = maskSensitiveValue(key, rawValue)
         })
 
         return NextResponse.json(filteredEnvs)
@@ -89,21 +112,7 @@ export async function PUT(req: Request) {
             return NextResponse.json({ error: 'Invalid password' }, { status: 401 })
         }
 
-        // Strict Allowlist Validation
-        const ALLOWED_KEYS = new Set([
-            'DATABASE_URL',
-            'NEXTAUTH_URL',
-            'AUTH_SECRET',
-            'GOOGLE_CLIENT_ID',
-            'GOOGLE_CLIENT_SECRET',
-            'NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME',
-            'NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET',
-            'SMTP_HOST',
-            'SMTP_PORT',
-            'SMTP_USER',
-            'SMTP_PASSWORD'
-        ])
-
+        // Filter updates against the strict allowlist
         const filteredUpdates: Record<string, string> = {}
         Object.keys(updates).forEach(key => {
             if (ALLOWED_KEYS.has(key)) {
@@ -114,6 +123,10 @@ export async function PUT(req: Request) {
         if (Object.keys(filteredUpdates).length === 0) {
             return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 })
         }
+
+        // Audit log for environment variable changes
+        const changedKeys = Object.keys(filteredUpdates)
+        console.log(`[ENV AUDIT] ${new Date().toISOString()} | User: ${session.user.email} | Keys updated: ${changedKeys.join(', ')}`)
 
         let envContent = ''
         if (fs.existsSync(ENV_PATH)) {
@@ -130,11 +143,10 @@ export async function PUT(req: Request) {
                 const key = match[1].trim()
                 seenKeys.add(key)
                 if (filteredUpdates.hasOwnProperty(key)) {
-                    let val = filteredUpdates[key]
-                    if (val.includes(' ') && !val.startsWith('"')) {
-                        val = `"${val}"`
-                    }
-                    return `${key}="${filteredUpdates[key]}"`
+                    const val = filteredUpdates[key]
+                    // Consistently quote values that contain spaces or special characters
+                    const needsQuotes = val.includes(' ') || val.includes('#') || val.includes('=')
+                    return `${key}=${needsQuotes ? `"${val}"` : val}`
                 }
             }
             return line
@@ -143,11 +155,9 @@ export async function PUT(req: Request) {
         // Add new keys that weren't in the file
         Object.keys(filteredUpdates).forEach(key => {
             if (!seenKeys.has(key)) {
-                let val = filteredUpdates[key]
-                if (val.includes(' ') && !val.startsWith('"')) {
-                    val = `"${val}"`
-                }
-                lines.push(`${key}="${filteredUpdates[key]}"`)
+                const val = filteredUpdates[key]
+                const needsQuotes = val.includes(' ') || val.includes('#') || val.includes('=')
+                lines.push(`${key}=${needsQuotes ? `"${val}"` : val}`)
             }
         })
 

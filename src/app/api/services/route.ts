@@ -1,6 +1,6 @@
 
 import { auth } from '@/lib/auth'
-import prisma from '@/lib/prisma'
+import { prisma } from '@/lib/prisma'
 import { ServiceSchema } from '@/lib/schemas'
 import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'

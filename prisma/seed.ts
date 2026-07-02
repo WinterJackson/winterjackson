@@ -4,8 +4,16 @@ import bcrypt from 'bcryptjs'
 const prisma = new PrismaClient()
 
 async function main() {
+    if (process.env.NODE_ENV === 'production') {
+        throw new Error('Seeding is blocked in production environments to prevent data loss.')
+    }
+
     // 1. Create Admin User
-    const hashedPassword = await bcrypt.hash('admin123', 12)
+    const seedPassword = process.env.ADMIN_SEED_PASSWORD || 'admin123'
+    if (seedPassword === 'admin123') {
+        console.warn('⚠️ WARNING: Using default seed password. Set ADMIN_SEED_PASSWORD in your .env for security.')
+    }
+    const hashedPassword = await bcrypt.hash(seedPassword, 12)
     const adminUser = await prisma.user.upsert({
         where: { email: 'winterjacksonwj@gmail.com' },
         update: {
@@ -281,7 +289,7 @@ async function main() {
                 avatarUrl: '/images/user.png',
                 linkedinUrl: 'https://www.linkedin.com/in/jeremyomare/',
                 order: 1,
-            } as any,
+            },
             {
                 name: 'Nelson Lawrence',
                 role: 'MD, Pinnacle Green Systems Ltd.',
@@ -289,7 +297,8 @@ async function main() {
                 text: '"Working with Winter Jackson, on my project has been a positive experience so far. The collaborative nature and innovative solutions have made the development process smooth and efficient. Looking forward to the project\'s completion!"',
                 avatarUrl: '/images/user.png',
                 linkedinUrl: 'https://www.linkedin.com/in/nelson-lawrence-91bb2671/',
-            } as any,
+                order: 2,
+            },
             {
                 name: 'Kimathi I.',
                 role: 'Investment Manager',
@@ -297,7 +306,8 @@ async function main() {
                 text: '"Absolutely reliable and highly efficient! Not only was our project completed well ahead of schedule, but the quality of work delivered surpassed the expectations. Exceptional service from start to finish!"',
                 avatarUrl: '/images/user.png',
                 linkedinUrl: 'https://www.linkedin.com/in/ikiao/',
-            } as any,
+                order: 3,
+            },
         ],
     })
     console.log('✅ Testimonials seeded')

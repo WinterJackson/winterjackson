@@ -11,7 +11,7 @@ interface ActivityItem {
 
 interface ActivityFeedProps {
   activities: ActivityItem[]
-  styles: any
+  styles: Record<string, string>
 }
 
 export default function ActivityFeed({ activities, styles }: ActivityFeedProps) {

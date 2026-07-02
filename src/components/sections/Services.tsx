@@ -62,7 +62,6 @@ export default function Services({ isActive, services, clients }: ServicesProps)
                         alt={client.name} 
                         fill
                         sizes="250px"
-                        unoptimized
                         className="client-logo-img"
                         style={{ objectFit: 'contain' }}
                       />

@@ -9,8 +9,13 @@ import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import React from 'react'
-import { Toaster } from 'react-hot-toast'
 import styles from '../../app/admin/layout.module.css'
+
+const PUBLIC_ADMIN_ROUTES = [
+  '/admin/login',
+  '/admin/forgot-password',
+  '/admin/reset-password'
+]
 
 interface AdminLayoutClientProps {
   children: React.ReactNode
@@ -24,22 +29,14 @@ export default function AdminLayoutClient({ children, profile, settings }: Admin
   const { data: session, status } = useSession()
   const currentYear = new Date().getFullYear()
 
-  React.useEffect(() => {
-    // Rely on server-side protection in proxy.ts/middleware for stronger security
-    // This avoids race conditions where client-side state hasn't synced yet
-  }, [status, pathname, router])
 
   // If we're on a public admin page, don't show the admin layout
-  const isPublicPage = 
-    pathname === '/admin/login' || 
-    pathname === '/admin/forgot-password' || 
-    pathname === '/admin/reset-password'
+  const isPublicPage = PUBLIC_ADMIN_ROUTES.includes(pathname)
 
   if (isPublicPage) {
     return (
       <>
         {children}
-        <Toaster position="bottom-right" />
       </>
     )
   }
@@ -98,7 +95,6 @@ export default function AdminLayoutClient({ children, profile, settings }: Admin
       </main>
       <AdminMobileNav />
       <AdminBottomNav />
-      <Toaster position="bottom-right" />
     </div>
   )
 }

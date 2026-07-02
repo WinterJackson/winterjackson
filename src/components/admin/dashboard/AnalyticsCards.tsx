@@ -12,7 +12,7 @@ interface AnalyticsCardsProps {
     clients: number
     unreadMessages: number
   }
-  styles: any
+  styles: Record<string, string>
 }
 
 export default function AnalyticsCards({ stats, styles }: AnalyticsCardsProps) {

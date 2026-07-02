@@ -2,6 +2,11 @@ import { Profile, Service, Skill, Testimonial } from '@prisma/client'
 import { Linkedin, X } from 'lucide-react'
 import Image from 'next/image'
 import { useState } from 'react'
+import DOMPurify from 'isomorphic-dompurify'
+import dynamic from 'next/dynamic'
+import { languagesData, toolsData } from '@/lib/constants'
+
+const TestimonialModal = dynamic(() => import('./TestimonialModal'), { ssr: false })
 
 interface AboutProps {
   isActive: boolean
@@ -14,34 +19,6 @@ interface AboutProps {
 export default function About({ isActive, profile, testimonials, services, skills }: AboutProps) {
   const [activeModal, setActiveModal] = useState<Testimonial | null>(null)
 
-  // Static lists as per user request for accurate implementation
-  const languagesData = [
-    { name: 'CSS3', icon: '/images/CSS3.png' },
-    { name: 'HTML5', icon: '/images/HTML5.png' },
-    { name: 'JavaScript', icon: '/images/javascript.svg' },
-    { name: 'React', icon: '/images/react.svg' },
-    { name: 'Tailwind CSS', icon: '/images/Tailwind.png' },
-    { name: 'Next.js', icon: '/images/nextjs-dark.svg' },
-    { name: 'Node.js', icon: '/images/nodejs.svg' },
-    { name: 'Python', icon: '/images/python.svg' },
-    { name: 'Flask', icon: '/images/flask.svg' },
-    { name: 'MySQL', icon: '/images/mysql.svg' },
-    { name: 'SQLite', icon: '/images/sqlite.png' },
-    { name: 'SQLAlchemy', icon: '/images/sqlalchemy.png' },
-    { name: 'Ruby', icon: '/images/Ruby.png' },
-    { name: 'MongoDB', icon: '/images/MongoDB.svg' },
-    { name: 'Jest', icon: '/images/Jest.svg' },
-  ]
-
-  const toolsData = [
-    { name: 'Linux', icon: '/images/Linux.png' },
-    { name: 'Postman', icon: '/images/Postman.svg' },
-    { name: 'PostgreSQL', icon: '/images/postgresql.svg' },
-    { name: 'Heroku', icon: '/images/Heroku.png' },
-    { name: 'Git', icon: '/images/Git.png' },
-    { name: 'Figma', icon: '/images/Figma.png' },
-  ]
-
   // Filter Services
   const whatIDo = services.filter(s => s.category === 'service' || !s.category)
   const personalVentures = services.filter(s => s.category === 'venture')
@@ -53,7 +30,12 @@ export default function About({ isActive, profile, testimonials, services, skill
       </header>
 
       <section className="hidden show about-text">
-        <div dangerouslySetInnerHTML={{ __html: profile.bio.replace(/\n/g, '<br/>') }} />
+        <div dangerouslySetInnerHTML={{ 
+          __html: DOMPurify.sanitize(profile.bio.replace(/\n/g, '<br/>'), {
+            ALLOWED_TAGS: ['br', 'p', 'strong', 'em', 'a', 'span', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4'],
+            ALLOWED_ATTR: ['href', 'target', 'rel', 'class']
+          }) 
+        }} />
       </section>
 
       {/* What I Do */}
@@ -97,7 +79,6 @@ export default function About({ isActive, profile, testimonials, services, skill
                         alt={`${lang.name} logo`} 
                         width={60} 
                         height={60}
-                        unoptimized
                         style={{ objectFit: 'contain', width: '60px', height: '60px' }}
                       />
                     </div>
@@ -122,7 +103,6 @@ export default function About({ isActive, profile, testimonials, services, skill
                           alt={`${tool.name} logo`} 
                           width={60} 
                           height={60}
-                          unoptimized
                           style={{ objectFit: 'contain', width: '60px', height: '60px' }}
                         />
                     </div>
@@ -202,41 +182,10 @@ export default function About({ isActive, profile, testimonials, services, skill
 
       {/* Testimonials Modal */}
       {activeModal && (
-        <div className="modal-container active" data-modal-container>
-          <div className="overlay active" onClick={() => setActiveModal(null)} data-overlay></div>
-          <section className="hidden show testimonials-modal">
-            <button
-              className="modal-close-btn"
-              onClick={() => setActiveModal(null)}
-              data-modal-close-btn
-            >
-              <X />
-            </button>
-
-            <div className="modal-img-wrapper">
-              <figure className="modal-avatar-box">
-                {activeModal.avatarUrl && (
-                  <Image
-                    src={activeModal.avatarUrl}
-                    alt={activeModal.name}
-                    width={80}
-                    height={80}
-                    data-modal-img
-                  />
-                )}
-              </figure>
-            </div>
-
-            <div className="modal-content">
-              <div className="testimonial-name-wrap">
-                <h4 className="h3 modal-title" data-modal-title>{activeModal.name}</h4>
-              </div>
-              <div data-modal-text>
-                <p>{activeModal.text.replace(/"/g, '')}</p>
-              </div>
-            </div>
-          </section>
-        </div>
+        <TestimonialModal 
+          activeModal={activeModal} 
+          onClose={() => setActiveModal(null)} 
+        />
       )}
     </article>
   )

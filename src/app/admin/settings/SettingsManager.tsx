@@ -24,6 +24,12 @@ export default function AdminSettingsPage() {
   const [showAuthSecret, setShowAuthSecret] = useState(false)
   const [showGoogleClientSecret, setShowGoogleClientSecret] = useState(false)
   const [showSmtpPassword, setShowSmtpPassword] = useState(false)
+  
+  const [showEnvCurrentPassword, setShowEnvCurrentPassword] = useState(false)
+  const [showEmailCurrentPassword, setShowEmailCurrentPassword] = useState(false)
+  const [showPasswordCurrent, setShowPasswordCurrent] = useState(false)
+  const [showPasswordNew, setShowPasswordNew] = useState(false)
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false)
 
   // Settings Form (Hooks kept same)
   const {
@@ -111,6 +117,7 @@ export default function AdminSettingsPage() {
   useEffect(() => {
     fetchSettings()
     fetchEnvVars()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const fetchSettings = async () => {
@@ -193,9 +200,10 @@ export default function AdminSettingsPage() {
         signOut({ callbackUrl: '/admin/login' })
       }, 2000)
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to update email:', error)
-      toast.error(error.message || 'Failed to update email')
+      const message = error instanceof Error ? error.message : 'Failed to update email'
+      toast.error(message)
     }
   }
 
@@ -210,9 +218,10 @@ export default function AdminSettingsPage() {
       if (!res.ok) throw new Error(result.error || 'Failed to update password')
       toast.success('Password updated successfully')
       resetPassword()
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to update password:', error)
-      toast.error(error.message || 'Failed to update password')
+      const message = error instanceof Error ? error.message : 'Failed to update password'
+      toast.error(message)
     }
   }
 
@@ -249,6 +258,8 @@ export default function AdminSettingsPage() {
     { id: 'account', label: 'Account', icon: User },
   ]
 
+  const logoUrl = watchSettings('logoUrl')
+
   return (
     <div className={adminStyles.page}>
       <header className={adminStyles.pageHeader}>
@@ -261,7 +272,7 @@ export default function AdminSettingsPage() {
         {tabs.map(tab => (
             <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id as any)}
+            onClick={() => setActiveTab(tab.id as typeof activeTab)}
             className={`${styles.tabBtn} ${activeTab === tab.id ? styles.tabBtnActive : ''} shrink-0`}
             >
             <tab.icon />
@@ -284,7 +295,7 @@ export default function AdminSettingsPage() {
                                 <label className={formStyles.checkboxGroup}>
                                     <input type="checkbox" {...registerSettings('showResumeDownload')} className={formStyles.checkbox} />
                                     <span className={formStyles.checkboxLabel}>
-                                        Show "Download CV" Button
+                                        Show &quot;Download CV&quot; Button
                                     </span>
                                 </label>
                                 <p className={styles.helperText}>Toggle visibility of the resume download button on the public site.</p>
@@ -326,7 +337,7 @@ export default function AdminSettingsPage() {
 
                         <div className={formStyles.group}>
                             <ImageUpload 
-                                value={watchSettings('logoUrl') || ''} 
+                                value={logoUrl || ''} 
                                 onChange={(url) => setValueSettings('logoUrl', url)} 
                                 label="Site Favicon"
                             />
@@ -370,7 +381,7 @@ export default function AdminSettingsPage() {
                             ].map((feature) => (
                                 <div key={feature.name} className={styles.featureCard}>
                                     <label className={styles.featureLabel}>
-                                        <input type="checkbox" {...registerSettings(feature.name as any)} className={styles.toggleInput} />
+                                        <input type="checkbox" {...registerSettings(feature.name as keyof SiteSettingsFormData)} className={styles.toggleInput} />
                                         <div className={styles.featureInfo}>
                                             <span className={styles.featureTitle}>{feature.label}</span>
                                             <span className={styles.featureDesc}>{feature.desc}</span>
@@ -574,12 +585,21 @@ export default function AdminSettingsPage() {
 
                 <div className={formStyles.group}>
                     <label>Confirm Changes</label>
-                    <input 
-                        type="password" 
-                        {...registerEnv('currentPassword')} 
-                        className={formStyles.input} 
-                        placeholder="Enter your password to save changes"
-                    />
+                    <div className={styles.passwordWrapper}>
+                        <input 
+                            type={showEnvCurrentPassword ? 'text' : 'password'} 
+                            {...registerEnv('currentPassword')} 
+                            className={`${formStyles.input} ${styles.passwordInput}`} 
+                            placeholder="Enter your password to save changes"
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowEnvCurrentPassword(!showEnvCurrentPassword)}
+                            className={styles.passwordToggle}
+                        >
+                            {showEnvCurrentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
+                    </div>
                     {errorsEnv.currentPassword && <span className="error">{errorsEnv.currentPassword.message}</span>}
                 </div>
 
@@ -622,12 +642,21 @@ export default function AdminSettingsPage() {
 
               <div className={formStyles.group}>
                 <label>Current Password</label>
-                <input 
-                  type="password" 
-                  {...registerEmail('currentPassword')} 
-                  className={formStyles.input} 
-                  placeholder="Required to confirm changes"
-                />
+                <div className={styles.passwordWrapper}>
+                    <input 
+                    type={showEmailCurrentPassword ? 'text' : 'password'} 
+                    {...registerEmail('currentPassword')} 
+                    className={`${formStyles.input} ${styles.passwordInput}`} 
+                    placeholder="Required to confirm changes"
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowEmailCurrentPassword(!showEmailCurrentPassword)}
+                        className={styles.passwordToggle}
+                    >
+                        {showEmailCurrentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                </div>
                 {errorsEmail.currentPassword && <span className="error">{errorsEmail.currentPassword.message}</span>}
               </div>
 
@@ -656,31 +685,58 @@ export default function AdminSettingsPage() {
               
               <div className={formStyles.group}>
                 <label>Current Password</label>
-                <input 
-                  type="password" 
-                  {...registerPassword('currentPassword')} 
-                  className={formStyles.input} 
-                />
+                <div className={styles.passwordWrapper}>
+                    <input 
+                    type={showPasswordCurrent ? 'text' : 'password'} 
+                    {...registerPassword('currentPassword')} 
+                    className={`${formStyles.input} ${styles.passwordInput}`} 
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowPasswordCurrent(!showPasswordCurrent)}
+                        className={styles.passwordToggle}
+                    >
+                        {showPasswordCurrent ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                </div>
                 {errorsPassword.currentPassword && <span className="error">{errorsPassword.currentPassword.message}</span>}
               </div>
 
               <div className={formStyles.group}>
                 <label>New Password</label>
-                <input 
-                  type="password" 
-                  {...registerPassword('newPassword')} 
-                  className={formStyles.input} 
-                />
+                <div className={styles.passwordWrapper}>
+                    <input 
+                    type={showPasswordNew ? 'text' : 'password'} 
+                    {...registerPassword('newPassword')} 
+                    className={`${formStyles.input} ${styles.passwordInput}`} 
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowPasswordNew(!showPasswordNew)}
+                        className={styles.passwordToggle}
+                    >
+                        {showPasswordNew ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                </div>
                 {errorsPassword.newPassword && <span className="error">{errorsPassword.newPassword.message}</span>}
               </div>
 
               <div className={formStyles.group}>
                 <label>Confirm New Password</label>
-                <input 
-                  type="password" 
-                  {...registerPassword('confirmPassword')} 
-                  className={formStyles.input} 
-                />
+                <div className={styles.passwordWrapper}>
+                    <input 
+                    type={showPasswordConfirm ? 'text' : 'password'} 
+                    {...registerPassword('confirmPassword')} 
+                    className={`${formStyles.input} ${styles.passwordInput}`} 
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
+                        className={styles.passwordToggle}
+                    >
+                        {showPasswordConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                </div>
                 {errorsPassword.confirmPassword && <span className="error">{errorsPassword.confirmPassword.message}</span>}
               </div>
 

@@ -37,7 +37,23 @@ export default function AdminSkillsPage() {
     }
   })
 
+  const fetchSkills = async () => {
+    try {
+      const res = await fetch('/api/skills')
+      if (res.ok) {
+        const data = await res.json()
+        setSkills(data)
+      }
+    } catch (error) {
+      console.error('Failed to fetch skills:', error)
+      toast.error('Failed to load skills')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchSkills()
   }, [])
 
@@ -60,21 +76,6 @@ export default function AdminSkillsPage() {
       })
     }
   }, [editingItem, reset])
-
-  const fetchSkills = async () => {
-    try {
-      const res = await fetch('/api/skills')
-      if (res.ok) {
-        const data = await res.json()
-        setSkills(data)
-      }
-    } catch (error) {
-      console.error('Failed to fetch skills:', error)
-      toast.error('Failed to load skills')
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const onSubmit = async (data: SkillFormData) => {
     try {
