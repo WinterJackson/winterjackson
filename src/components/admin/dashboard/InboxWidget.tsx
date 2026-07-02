@@ -2,7 +2,7 @@
 
 import { deleteMessage, markMessageRead } from '@/app/actions/dashboard'
 import { Check, Mail, MessageSquare, Trash2, X } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 
 interface Message {
@@ -23,20 +23,33 @@ export default function InboxWidget({ initialMessages, styles }: InboxWidgetProp
   const [messages, setMessages] = useState<Message[]>(initialMessages)
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null)
 
+  // Sync with live DB updates from Server Component revalidations
+  useEffect(() => {
+    setMessages(initialMessages)
+  }, [initialMessages])
+
   const handleRead = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation()
-    await markMessageRead(id)
-    setMessages(prev => prev.map(m => m.id === id ? { ...m, isRead: true } : m))
-    toast.success('Marked as read')
+    const res = await markMessageRead(id)
+    if (res.success) {
+      setMessages(prev => prev.map(m => m.id === id ? { ...m, isRead: true } : m))
+      toast.success('Marked as read')
+    } else {
+      toast.error(res.error || 'Failed to mark as read')
+    }
   }
 
   const handleDelete = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation()
     if(!confirm('Delete this message?')) return
-    await deleteMessage(id)
-    setMessages(prev => prev.filter(m => m.id !== id))
-    toast.success('Message deleted')
-    if (selectedMessage?.id === id) setSelectedMessage(null)
+    const res = await deleteMessage(id)
+    if (res.success) {
+      setMessages(prev => prev.filter(m => m.id !== id))
+      toast.success('Message deleted')
+      if (selectedMessage?.id === id) setSelectedMessage(null)
+    } else {
+      toast.error(res.error || 'Failed to delete message')
+    }
   }
 
   return (

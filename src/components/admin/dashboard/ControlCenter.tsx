@@ -3,7 +3,7 @@
 import { toggleSiteSetting } from '@/app/actions/dashboard'
 import { SiteSettings } from '@prisma/client'
 import { Eye, EyeOff, Power, Settings2 } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import tooltipStyles from '../Tooltips.module.css'
 
@@ -17,6 +17,11 @@ type ToggleableKey = 'maintenanceMode' | 'showProjects' | 'showServices' | 'show
 export default function ControlCenter({ settings, styles }: ControlCenterProps) {
   const [localSettings, setLocalSettings] = useState(settings)
   const [loading, setLoading] = useState<string | null>(null)
+
+  // Sync with live DB updates from Server Component revalidations
+  useEffect(() => {
+    setLocalSettings(settings)
+  }, [settings])
 
   const getToggleValue = (key: ToggleableKey): boolean => {
     return localSettings ? Boolean(localSettings[key]) : false
