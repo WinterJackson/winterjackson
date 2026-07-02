@@ -19,7 +19,7 @@ export default function AnalyticsCards({ stats, styles }: AnalyticsCardsProps) {
   const cards = [
     { label: 'Total Projects', value: stats.projects, icon: Code, color: '#8b5cf6', path: '/admin/projects' },
     { label: 'Testimonials', value: stats.testimonials, icon: MessageSquare, color: '#10b981', path: '/admin/testimonials' },
-    { label: 'Active Services', value: stats.services, icon: Briefcase, color: '#f59e0b', path: '/admin/services' },
+    { label: 'Total Services', value: stats.services, icon: Briefcase, color: '#f59e0b', path: '/admin/services' },
     { label: 'Active Clients', value: stats.clients, icon: Users, color: '#3b82f6', path: '/admin/clients' },
     { label: 'Total Skills', value: stats.skills, icon: Zap, color: '#eab308', path: '/admin/skills' },
     { label: 'New Messages', value: stats.unreadMessages, icon: Eye, color: '#ec4899', path: '/admin/messages' },

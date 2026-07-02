@@ -67,25 +67,53 @@ export async function getRecentActivity() {
     const session = await auth()
     if (!session) throw new Error('Unauthorized')
 
-    // Fetch top 3 items from key tables sorted by date
-    const [projects, testimonials] = await Promise.all([
+    // Fetch top 3 items from all key tables sorted by date
+    const [projects, testimonials, experiences, services, certifications, referees] = await Promise.all([
         prisma.project.findMany({ take: 3, orderBy: { createdAt: 'desc' } }),
-        prisma.testimonial.findMany({ take: 3, orderBy: { createdAt: 'desc' } })
+        prisma.testimonial.findMany({ take: 3, orderBy: { createdAt: 'desc' } }),
+        prisma.experience.findMany({ take: 3, orderBy: { createdAt: 'desc' } }),
+        prisma.service.findMany({ take: 3, orderBy: { createdAt: 'desc' } }),
+        prisma.certification.findMany({ take: 3, orderBy: { createdAt: 'desc' } }),
+        prisma.referee.findMany({ take: 3, orderBy: { createdAt: 'desc' } })
     ])
 
     // Combine and sort
     const activity = [
         ...projects.map(p => ({
             id: p.id,
-            type: 'Project',
+            type: 'Project Added',
             name: p.title,
             date: p.createdAt
         })),
         ...testimonials.map(t => ({
             id: t.id,
-            type: 'Testimonial',
+            type: 'Testimonial Added',
             name: `from ${t.name}`,
             date: t.createdAt
+        })),
+        ...experiences.map(e => ({
+            id: e.id,
+            type: 'Experience Added',
+            name: e.jobTitle,
+            date: e.createdAt
+        })),
+        ...services.map(s => ({
+            id: s.id,
+            type: 'Service Added',
+            name: s.title,
+            date: s.createdAt
+        })),
+        ...certifications.map(c => ({
+            id: c.id,
+            type: 'Certification Added',
+            name: c.name,
+            date: c.createdAt
+        })),
+        ...referees.map(r => ({
+            id: r.id,
+            type: 'Referee Added',
+            name: r.name,
+            date: r.createdAt
         }))
     ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
         .slice(0, 5)
