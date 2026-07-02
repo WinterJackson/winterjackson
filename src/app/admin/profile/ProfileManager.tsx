@@ -8,6 +8,7 @@ import toast from 'react-hot-toast'
 import { z } from 'zod'
 
 import formStyles from '@/components/admin/AdminForm.module.css'
+import DocumentUpload from '@/components/admin/DocumentUpload'
 import ImageUpload from '@/components/admin/ImageUpload'
 import adminStyles from '@/components/admin/Shared.module.css'
 import VideoUpload from '@/components/admin/VideoUpload'
@@ -145,31 +146,33 @@ export default function ProfileManager() {
         {/* Media */}
         <h3 className="text-xl font-semibold mb-4">Profile Media</h3>
 
-        <div className={formStyles.group}>
-          <ImageUpload
-            value={watch('avatarUrl') || ''}
-            onChange={(url) => setValue('avatarUrl', url)}
-            label="Profile Image"
-          />
-        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className={formStyles.group}>
+            <ImageUpload
+              value={watch('avatarUrl') || ''}
+              onChange={(url) => setValue('avatarUrl', url)}
+              label="Profile Image"
+            />
+            <p className="text-xs text-gray-500 mt-2 text-center">Standard square image recommended.</p>
+          </div>
 
-        <div className={formStyles.group}>
-          <VideoUpload
-            value={watch('profileVideoUrl') || ''}
-            onChange={(url) => setValue('profileVideoUrl', url)}
-            label="Profile Video (MP4)"
-          />
-          <p className="text-xs text-gray-500 mt-1">Video will display in sidebar with red morphing border</p>
-        </div>
+          <div className={formStyles.group}>
+            <VideoUpload
+              value={watch('profileVideoUrl') || ''}
+              onChange={(url) => setValue('profileVideoUrl', url)}
+              label="Profile Video (MP4)"
+            />
+            <p className="text-xs text-gray-500 mt-2 text-center">Video will display in sidebar with red morphing border.</p>
+          </div>
 
-        <div className={formStyles.group}>
-          <ImageUpload
-            value={watch('cvUrl') || ''}
-            onChange={(url) => setValue('cvUrl', url)}
-            label="Resume / CV (PDF)"
-            resourceType="raw"
-          />
-          <p className="text-xs text-gray-500 mt-1">Upload your latest CV (PDF format). This will be linked to the &quot;Download CV&quot; button.</p>
+          <div className={formStyles.group}>
+            <DocumentUpload
+              value={watch('cvUrl') || ''}
+              onChange={(url) => setValue('cvUrl', url)}
+              label="Resume / CV (PDF)"
+            />
+            <p className="text-xs text-gray-500 mt-2 text-center">Upload your latest CV. This links to the "Download CV" button.</p>
+          </div>
         </div>
 
         <hr className="my-6 border-gray-700" />

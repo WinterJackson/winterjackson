@@ -13,6 +13,15 @@ interface ResumeProps {
   showDownloadBtn?: boolean
 }
 
+const getDownloadUrl = (url: string | null | undefined) => {
+  if (!url) return "/docs/Winter Jackson CV.pdf"
+  if (url.includes('cloudinary.com')) {
+    // Insert fl_attachment into the cloudinary URL to force download
+    return url.replace('/upload/', '/upload/fl_attachment/')
+  }
+  return url
+}
+
 export default function Resume({ isActive, experiences, educations, skills, profile, showDownloadBtn = true }: ResumeProps) {
   const [typedText, setTypedText] = useState('')
   const [shouldType, setShouldType] = useState(false)
@@ -120,7 +129,7 @@ export default function Resume({ isActive, experiences, educations, skills, prof
       {/* Download CV */}
       {showDownloadBtn && (
         <div className="download-div">
-          <a href={profile.cvUrl || "/docs/Winter Jackson CV.pdf"} download="Winter Jackson CV" className="download-btn">
+          <a href={getDownloadUrl(profile.cvUrl)} target="_blank" rel="noopener noreferrer" download="Winter Jackson CV" className="download-btn">
             Download CV
           </a>
         </div>
