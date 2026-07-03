@@ -1,9 +1,11 @@
 
-import { sendEmail } from '@/lib/email'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 import crypto from 'crypto'
 import { NextResponse } from 'next/server'
+import { Resend } from 'resend'
+
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function POST(req: Request) {
     try {
@@ -51,10 +53,11 @@ export async function POST(req: Request) {
         const resetUrl = `${baseUrl}/admin/reset-password?token=${resetToken}&email=${email}`
 
         // Send Email
-        await sendEmail(
-            email,
-            'Password Reset Request - Winter Jackson Portfolio',
-            `
+        const { data, error } = await resend.emails.send({
+            from: 'onboarding@resend.dev',
+            to: email,
+            subject: 'Password Reset Request - Winter Jackson Portfolio',
+            html: `
 <!DOCTYPE html>
 <html>
 <head>
@@ -97,7 +100,12 @@ export async function POST(req: Request) {
 </body>
 </html>
       `
-        )
+        })
+
+        if (error) {
+            console.error('Resend Error:', error)
+            return NextResponse.json({ error: 'Failed to send reset email' }, { status: 500 })
+        }
 
         return NextResponse.json({ message: 'If that email exists, a reset link has been sent.' })
 

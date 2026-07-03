@@ -78,6 +78,8 @@ export async function POST(request: NextRequest) {
             resourceTypeEndpoint = 'raw'
         }
 
+        console.log(`[UPLOAD PIPELINE] File: ${file.name}, Type: ${file.type}, isDoc: ${isDoc}, Endpoint: ${resourceTypeEndpoint}`);
+
         // Upload to Cloudinary
         const response = await fetch(
             `https://api.cloudinary.com/v1_1/${cloudName}/${resourceTypeEndpoint}/upload`,

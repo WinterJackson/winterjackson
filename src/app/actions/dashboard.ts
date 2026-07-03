@@ -146,14 +146,46 @@ export async function toggleSiteSetting(key: string, value: boolean) {
     }
 }
 
-export async function getMessages() {
+export async function getMessages(skip: number = 0, take: number = 200) {
     const session = await auth()
     if (!session) throw new Error('Unauthorized')
 
     return await prisma.message.findMany({
         orderBy: { createdAt: 'desc' },
-        take: 200 // Increased from 50 to ensure historical messages aren't prematurely lost
+        skip,
+        take
     })
+}
+
+export async function deleteMessages(ids: string[]) {
+    const session = await auth()
+    if (!session) return { success: false, error: 'Unauthorized' }
+
+    try {
+        await prisma.message.deleteMany({
+            where: { id: { in: ids } }
+        })
+        revalidatePath('/admin')
+        return { success: true }
+    } catch (error) {
+        return { success: false, error: 'Failed to delete messages' }
+    }
+}
+
+export async function markMessagesRead(ids: string[]) {
+    const session = await auth()
+    if (!session) return { success: false, error: 'Unauthorized' }
+
+    try {
+        await prisma.message.updateMany({
+            where: { id: { in: ids } },
+            data: { isRead: true }
+        })
+        revalidatePath('/admin')
+        return { success: true }
+    } catch (error) {
+        return { success: false, error: 'Failed to mark messages as read' }
+    }
 }
 
 export async function markMessageRead(id: string) {
