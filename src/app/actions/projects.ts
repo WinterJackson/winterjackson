@@ -26,8 +26,16 @@ export async function createProject(data: unknown) {
     }
 
     try {
-        await prisma.project.create({
-            data: result.data
+        await prisma.$transaction(async (tx) => {
+            // Shift existing projects down to make room for the new order
+            await tx.project.updateMany({
+                where: { order: { gte: result.data.order } },
+                data: { order: { increment: 1 } }
+            })
+            
+            await tx.project.create({
+                data: result.data
+            })
         })
         revalidatePath('/admin/projects')
         revalidatePath('/admin') // Update Dashboard Stats
@@ -50,9 +58,30 @@ export async function updateProject(id: string, data: unknown) {
     }
 
     try {
-        await prisma.project.update({
-            where: { id },
-            data: result.data
+        await prisma.$transaction(async (tx) => {
+            const existing = await tx.project.findUnique({ where: { id } })
+            
+            if (existing && existing.order !== result.data.order) {
+                // Moving the project UP the list (e.g. from order 5 to 1) -> shift others DOWN
+                if (result.data.order < existing.order) {
+                    await tx.project.updateMany({
+                        where: { order: { gte: result.data.order, lt: existing.order } },
+                        data: { order: { increment: 1 } }
+                    })
+                } 
+                // Moving the project DOWN the list (e.g. from order 1 to 5) -> shift others UP
+                else {
+                    await tx.project.updateMany({
+                        where: { order: { gt: existing.order, lte: result.data.order } },
+                        data: { order: { decrement: 1 } }
+                    })
+                }
+            }
+            
+            await tx.project.update({
+                where: { id },
+                data: result.data
+            })
         })
         revalidatePath('/admin/projects')
         revalidatePath('/admin') // Update Dashboard Stats
@@ -69,8 +98,20 @@ export async function deleteProject(id: string) {
     if (!session) return { success: false, error: 'Unauthorized' }
 
     try {
-        await prisma.project.delete({
-            where: { id }
+        await prisma.$transaction(async (tx) => {
+            const existing = await tx.project.findUnique({ where: { id } })
+            
+            await tx.project.delete({
+                where: { id }
+            })
+            
+            // Shift remaining projects up to close the gap
+            if (existing) {
+                await tx.project.updateMany({
+                    where: { order: { gt: existing.order } },
+                    data: { order: { decrement: 1 } }
+                })
+            }
         })
         revalidatePath('/admin/projects')
         revalidatePath('/admin') // Update Dashboard Stats

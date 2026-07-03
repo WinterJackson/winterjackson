@@ -16,10 +16,7 @@ interface ResumeProps {
 
 const getDownloadUrl = (url: string | null | undefined) => {
   if (!url) return "/docs/Winter Jackson CV.pdf"
-  if (url.includes('cloudinary.com')) {
-    // Insert fl_attachment into the cloudinary URL to force download
-    return url.replace('/upload/', '/upload/fl_attachment/')
-  }
+  // Return the secure, direct URL from Cloudinary
   return url
 }
 

@@ -71,9 +71,16 @@ export async function POST(request: NextRequest) {
         uploadFormData.append('file', file)
         uploadFormData.append('upload_preset', uploadPreset)
 
+        // Determine the correct Cloudinary resource_type endpoint
+        // PDFs and Docs MUST be uploaded as 'raw' to bypass Cloudinary's strict image-based PDF delivery restrictions
+        let resourceTypeEndpoint = 'auto'
+        if (isDoc) {
+            resourceTypeEndpoint = 'raw'
+        }
+
         // Upload to Cloudinary
         const response = await fetch(
-            `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`,
+            `https://api.cloudinary.com/v1_1/${cloudName}/${resourceTypeEndpoint}/upload`,
             {
                 method: 'POST',
                 body: uploadFormData,

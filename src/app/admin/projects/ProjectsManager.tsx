@@ -142,6 +142,11 @@ export default function AdminProjectsPage() {
   }
 
   const columns: Column<Project>[] = [
+    { 
+      header: 'Order', 
+      accessorKey: 'order',
+      cell: (item) => <span className="font-mono text-zinc-400 font-medium">#{item.order}</span>
+    },
     { header: 'Title', accessorKey: 'title' },
     { 
       header: 'Category', 
