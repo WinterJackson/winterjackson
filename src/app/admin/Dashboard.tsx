@@ -43,17 +43,17 @@ export default async function Dashboard({ session }: DashboardProps) {
       <div className={styles.bentoGrid}>
         
         {/* Column 1: Activity Feed */}
-        <div style={{ gridRow: 'span 2' }}>
+        <div className={styles.activityCol}>
            <ActivityFeed activities={activity} styles={styles} />
         </div>
 
         {/* Column 2: Inbox */}
-        <div style={{ gridColumn: 'span 1' }}>
+        <div className={styles.inboxCol}>
            <InboxWidget initialMessages={messages} styles={styles} />
         </div>
 
         {/* Column 3: Stacked Widgets */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div className={styles.widgetsCol}>
            <div style={{ flex: 1 }}>
              <ProfileHealth score={healthScore} styles={styles} />
            </div>

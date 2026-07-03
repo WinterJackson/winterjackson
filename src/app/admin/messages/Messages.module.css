@@ -8,16 +8,30 @@
   min-height: 500px;
 }
 
-.skeleton {
-  background: linear-gradient(90deg, var(--onyx) 25%, var(--jet) 50%, var(--onyx) 75%);
-  background-size: 200% 100%;
-  animation: loading 1.5s infinite;
-  border-radius: 4px;
+.markReadBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--onyx);
+  border: 1px solid var(--jet);
+  color: var(--light-gray);
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: var(--transition-1);
+  font-size: var(--fs-7);
+  font-weight: 500;
 }
 
-@keyframes loading {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+.markReadBtn:hover:not(:disabled) {
+  background: var(--jet);
+  color: var(--white-1);
+  border-color: var(--light-gray-70);
+}
+
+.markReadBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* Sidebar List */

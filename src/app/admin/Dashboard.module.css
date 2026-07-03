@@ -3,6 +3,8 @@
 .dashboard {
   /* Padding handled by AdminLayout (.main) */
   width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .header {
@@ -36,7 +38,7 @@
 /* Analytics Row */
 .analyticsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   margin-bottom: 30px;
 }
@@ -89,14 +91,59 @@
   min-height: 500px;
 }
 
+.activityCol {
+  grid-row: span 2;
+}
+
+.inboxCol {
+  grid-column: span 1;
+}
+
+.widgetsCol {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
 @media (max-width: 1200px) {
+  .analyticsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .bentoGrid {
     grid-template-columns: 1fr 1fr;
+  }
+  
+  .activityCol {
+    grid-column: span 2; /* Activity spans full width on top */
+    grid-row: auto;
+  }
+  
+  .inboxCol {
+    grid-column: span 1;
+  }
+  
+  .widgetsCol {
+    grid-column: span 1;
   }
 }
 
 @media (max-width: 768px) {
+  .analyticsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .bentoGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .activityCol, .inboxCol, .widgetsCol {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .analyticsGrid {
     grid-template-columns: 1fr;
   }
 }
@@ -190,7 +237,8 @@
 }
 
 .inboxItem.unread {
-  background: rgba(255, 69, 58, 0.05); /* Subtle red tint */
+  background: rgba(255, 69, 58, 0.05);
+  /* Subtle red tint */
   border-color: rgba(255, 69, 58, 0.2);
 }
 
@@ -240,6 +288,7 @@
   justify-content: center;
   color: var(--white-1);
 }
+
 .healthScore {
   font-size: 36px;
   font-weight: var(--fw-600);

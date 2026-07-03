@@ -31,7 +31,14 @@ export default function AdminTable<T extends { id: string }>({
   emptyIcon: EmptyIcon = Box,
 }: AdminTableProps<T>) {
   if (isLoading) {
-    return <div className="loading">Loading...</div>
+    return (
+      <div className="flex py-20 w-full items-center justify-center">
+        <div className="flex flex-col items-center">
+          <div className="w-10 h-10 border-4 border-zinc-800 border-t-[var(--bittersweet-shimmer)] rounded-full animate-spin"></div>
+          <p className="mt-4 text-gray-400 text-sm">Loading data...</p>
+        </div>
+      </div>
+    )
   }
 
   if (data.length === 0) {

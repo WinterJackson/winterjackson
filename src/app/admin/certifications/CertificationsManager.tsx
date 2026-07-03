@@ -118,17 +118,17 @@ export default function CertificationsManager({ initialCertifications }: Props) 
     {
       header: 'Actions',
       cell: (item: Certification) => (
-        <div className={tableStyles.actions}>
+        <div className={tableStyles.actionButtons}>
           <button
             onClick={() => handleOpenModal(item)}
-            className={`${tableStyles.actionBtn} ${tableStyles.editBtn}`}
+            className={tableStyles.editBtn}
             title="Edit"
           >
             <Edit size={18} />
           </button>
           <button
             onClick={() => handleDelete(item.id)}
-            className={`${tableStyles.actionBtn} ${tableStyles.deleteBtn}`}
+            className={tableStyles.deleteBtn}
             title="Delete"
           >
             <Trash2 size={18} />
@@ -139,29 +139,21 @@ export default function CertificationsManager({ initialCertifications }: Props) 
   ]
 
   return (
-    <div className={adminStyles.container}>
-      <div className={adminStyles.header}>
-        <div className={adminStyles.titleGroup}>
-          <BadgeCheck className={adminStyles.titleIcon} />
-          <h2 className={adminStyles.title}>Certifications</h2>
-        </div>
-        <button
-          onClick={() => handleOpenModal()}
-          className={adminStyles.primaryBtn}
-        >
-          <Plus size={20} />
-          Add Certification
-        </button>
-      </div>
+    <div className={adminStyles.page}>
+      <header className={adminStyles.pageHeader}>
+        <h1>Certifications</h1>
+        <p>Manage your professional certifications</p>
+      </header>
 
-      <div className={adminStyles.content}>
-        <AdminTable
-          columns={columns}
-          data={certifications}
-          isLoading={false}
-          emptyMessage="No certifications found. Add your first one!"
-        />
-      </div>
+      <AdminTable
+        columns={columns}
+        data={certifications}
+        isLoading={false}
+        onAdd={() => handleOpenModal()}
+        addButtonLabel="Add Certification"
+        emptyMessage="No certifications found. Add your first one!"
+        emptyIcon={BadgeCheck}
+      />
 
       <AdminModal
         isOpen={isModalOpen}
@@ -169,63 +161,67 @@ export default function CertificationsManager({ initialCertifications }: Props) 
         title={editingItem ? 'Edit Certification' : 'Add Certification'}
       >
         <form onSubmit={handleSubmit(onSubmit)} className={formStyles.form}>
-          <div className={formStyles.group}>
-            <label className={formStyles.label}>Certification Name</label>
-            <input
-              type="text"
-              {...register('name')}
-              className={`${formStyles.input} ${errors.name ? formStyles.inputError : ''}`}
-              placeholder="e.g. AWS Certified Solutions Architect"
-            />
-            {errors.name && <span className={formStyles.errorMessage}>{errors.name.message}</span>}
+          <div className={formStyles.row}>
+            <div className={formStyles.group}>
+              <label>Certification Name</label>
+              <input
+                type="text"
+                {...register('name')}
+                className={formStyles.input}
+                placeholder="e.g. AWS Certified Solutions Architect"
+              />
+              {errors.name && <span className="text-red-500 text-xs">{errors.name.message}</span>}
+            </div>
+
+            <div className={formStyles.group}>
+              <label>Display Order</label>
+              <input
+                type="number"
+                {...register('order', { valueAsNumber: true })}
+                className={formStyles.input}
+              />
+            </div>
           </div>
 
-          <div className={formStyles.group}>
-            <label className={formStyles.label}>Issuer</label>
-            <input
-              type="text"
-              {...register('issuer')}
-              className={`${formStyles.input} ${errors.issuer ? formStyles.inputError : ''}`}
-              placeholder="e.g. Amazon Web Services"
-            />
-            {errors.issuer && <span className={formStyles.errorMessage}>{errors.issuer.message}</span>}
-          </div>
+          <div className={formStyles.row}>
+            <div className={formStyles.group}>
+              <label>Issuer</label>
+              <input
+                type="text"
+                {...register('issuer')}
+                className={formStyles.input}
+                placeholder="e.g. Amazon Web Services"
+              />
+              {errors.issuer && <span className="text-red-500 text-xs">{errors.issuer.message}</span>}
+            </div>
 
-          <div className={formStyles.group}>
-            <label className={formStyles.label}>Date (Optional)</label>
-            <input
-              type="text"
-              {...register('date')}
-              className={`${formStyles.input} ${errors.date ? formStyles.inputError : ''}`}
-              placeholder="e.g. 2024"
-            />
-          </div>
-
-          <div className={formStyles.group}>
-            <label className={formStyles.label}>Display Order</label>
-            <input
-              type="number"
-              {...register('order', { valueAsNumber: true })}
-              className={`${formStyles.input} ${errors.order ? formStyles.inputError : ''}`}
-            />
-            {errors.order && <span className={formStyles.errorMessage}>{errors.order.message}</span>}
+            <div className={formStyles.group}>
+              <label>Date (Optional)</label>
+              <input
+                type="text"
+                {...register('date')}
+                className={formStyles.input}
+                placeholder="e.g. 2024"
+              />
+            </div>
           </div>
 
           <div className={formStyles.actions}>
-            <button
-              type="button"
-              onClick={handleCloseModal}
-              className={formStyles.cancelBtn}
-            >
+            <button type="button" onClick={handleCloseModal} className={formStyles.cancelBtn}>
               Cancel
             </button>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className={formStyles.submitBtn}
-            >
-              <Save size={20} />
-              {isSubmitting ? 'Saving...' : 'Save'}
+            <button type="submit" className={formStyles.saveBtn} disabled={isSubmitting}>
+              {isSubmitting ? (
+                 <>
+                   <span className="w-4 h-4 border-2 border-white/20 border-t-white rounded-[10px] animate-spin"></span>
+                   Saving...
+                 </>
+              ) : (
+                <>
+                  <Save size={18} />
+                  Save Certification
+                </>
+              )}
             </button>
           </div>
         </form>

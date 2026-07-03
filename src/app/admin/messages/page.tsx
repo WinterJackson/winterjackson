@@ -1,10 +1,11 @@
 'use client'
 
-import { deleteMessage, getMessages, markMessageRead, markAllMessagesRead } from '@/app/actions/dashboard'
-import { ArrowLeft, MailOpen, Reply, Trash2 } from 'lucide-react'
+import { deleteMessage, getMessages, markMessageRead, markAllMessagesRead, markMessageUnread } from '@/app/actions/dashboard'
+import { ArrowLeft, Mail, MailOpen, Reply, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import styles from './Messages.module.css'
+import adminStyles from '@/components/admin/Shared.module.css'
 
 interface Message {
   id: string
@@ -26,6 +27,14 @@ export default function MessagesPage() {
     try {
       const data = await getMessages()
       setMessages(JSON.parse(JSON.stringify(data)))
+      // Auto-select first message on desktop if none selected
+      if (data.length > 0 && window.innerWidth > 900) {
+        setSelectedId(data[0].id)
+        if (!data[0].isRead) {
+          markMessageRead(data[0].id)
+          setMessages(prev => prev.map((m, i) => i === 0 ? { ...m, isRead: true } : m))
+        }
+      }
     } catch (error) {
       toast.error('Failed to load messages')
     } finally {
@@ -44,6 +53,17 @@ export default function MessagesPage() {
       await markMessageRead(msg.id)
       setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, isRead: true } : m))
       // No toast for auto-read on open, cleaner UX
+    }
+  }
+
+  const handleMarkUnread = async (id: string, e?: React.MouseEvent) => {
+    e?.stopPropagation()
+    const res = await markMessageUnread(id)
+    if (res.success) {
+      setMessages(prev => prev.map(m => m.id === id ? { ...m, isRead: false } : m))
+      toast.success('Marked as unread')
+    } else {
+      toast.error('Failed to mark as unread')
     }
   }
 
@@ -86,29 +106,21 @@ export default function MessagesPage() {
 
 
   return (
-    <div>
-      <div style={{ marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-         <div>
-            <h1 style={{ fontSize: 'var(--fs-1)', color: 'var(--white-1)', marginBottom: '8px' }}>Messages</h1>
-            <p style={{ color: 'var(--light-gray)', fontSize: 'var(--fs-6)' }}>Manage your client inquiries</p>
-         </div>
-         {/* Could add a 'Mark all read' button here later */}
-         <button 
-           onClick={handleMarkAllRead}
-           disabled={loading || messages.filter(m => !m.isRead).length === 0}
-           style={{
-             background: 'var(--onyx)',
-             border: '1px solid var(--jet)',
-             color: 'var(--light-gray)',
-             padding: '8px 16px',
-             borderRadius: '8px',
-             cursor: (loading || messages.filter(m => !m.isRead).length === 0) ? 'not-allowed' : 'pointer',
-             opacity: (loading || messages.filter(m => !m.isRead).length === 0) ? 0.5 : 1
-           }}
-         >
-           Mark all read
-         </button>
-      </div>
+    <div className={adminStyles.page}>
+      <header className={adminStyles.pageHeader} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <h1>Messages</h1>
+          <p>Manage your client inquiries</p>
+        </div>
+        <button 
+          onClick={handleMarkAllRead}
+          disabled={loading || messages.filter(m => !m.isRead).length === 0}
+          className={styles.markReadBtn}
+        >
+          <MailOpen size={18} />
+          Mark all read
+        </button>
+      </header>
 
       <div className={styles.container}>
         {/* Sidebar / List */}
@@ -125,19 +137,17 @@ export default function MessagesPage() {
           
           <div className={styles.messageList}>
             {loading ? (
-               // Skeleton Loader
-               Array.from({ length: 5 }).map((_, i) => (
-                 <div key={i} className={styles.messageItem} style={{ pointerEvents: 'none' }}>
-                    <div className={styles.itemHeader} style={{ marginBottom: '8px' }}>
-                       <div className={styles.skeleton} style={{ width: '60%', height: '16px' }} />
-                       <div className={styles.skeleton} style={{ width: '20%', height: '12px' }} />
-                    </div>
-                    <div className={styles.skeleton} style={{ width: '90%', height: '14px', marginBottom: '4px' }} />
-                    <div className={styles.skeleton} style={{ width: '70%', height: '14px' }} />
+               <div className="flex py-20 w-full items-center justify-center">
+                 <div className="flex flex-col items-center">
+                   <div className="w-10 h-10 border-4 border-zinc-800 border-t-[var(--bittersweet-shimmer)] rounded-full animate-spin"></div>
+                   <p className="mt-4 text-gray-400 text-sm">Loading messages...</p>
                  </div>
-               ))
+               </div>
             ) : filteredMessages.length === 0 ? (
-               <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--light-gray-70)' }}>
+               <div className={styles.emptySelection}>
+                 <div style={{ padding: '20px', background: 'var(--onyx)', borderRadius: '50%' }}>
+                    <MailOpen size={40} style={{ color: 'var(--bittersweet-shimmer)' }} />
+                 </div>
                  <p>No messages found.</p>
                </div>
             ) : (
@@ -195,9 +205,16 @@ export default function MessagesPage() {
                          {new Date(selectedMessage.createdAt).toLocaleString()}
                       </span>
                       <button 
+                        className={styles.actionBtn} 
+                        onClick={(e) => handleMarkUnread(selectedMessage.id, e)}
+                        title="Mark as unread"
+                      >
+                        <Mail size={18} />
+                      </button>
+                      <button 
                         className={`${styles.actionBtn} ${styles.delete}`} 
                         onClick={(e) => handleDelete(selectedMessage.id, e)}
-                        title="Delete"
+                        title="Delete message"
                       >
                         <Trash2 size={18} />
                       </button>

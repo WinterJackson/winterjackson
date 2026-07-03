@@ -124,17 +124,17 @@ export default function RefereesManager({ initialReferees }: Props) {
     {
       header: 'Actions',
       cell: (item: Referee) => (
-        <div className={tableStyles.actions}>
+        <div className={tableStyles.actionButtons}>
           <button
             onClick={() => handleOpenModal(item)}
-            className={`${tableStyles.actionBtn} ${tableStyles.editBtn}`}
+            className={tableStyles.editBtn}
             title="Edit"
           >
             <Edit size={18} />
           </button>
           <button
             onClick={() => handleDelete(item.id)}
-            className={`${tableStyles.actionBtn} ${tableStyles.deleteBtn}`}
+            className={tableStyles.deleteBtn}
             title="Delete"
           >
             <Trash2 size={18} />
@@ -145,29 +145,21 @@ export default function RefereesManager({ initialReferees }: Props) {
   ]
 
   return (
-    <div className={adminStyles.container}>
-      <div className={adminStyles.header}>
-        <div className={adminStyles.titleGroup}>
-          <UserCheck className={adminStyles.titleIcon} />
-          <h2 className={adminStyles.title}>Referees</h2>
-        </div>
-        <button
-          onClick={() => handleOpenModal()}
-          className={adminStyles.primaryBtn}
-        >
-          <Plus size={20} />
-          Add Referee
-        </button>
-      </div>
+    <div className={adminStyles.page}>
+      <header className={adminStyles.pageHeader}>
+        <h1>Referees</h1>
+        <p>Manage your professional references</p>
+      </header>
 
-      <div className={adminStyles.content}>
-        <AdminTable
-          columns={columns}
-          data={referees}
-          isLoading={false}
-          emptyMessage="No referees found. Add your first one!"
-        />
-      </div>
+      <AdminTable
+        columns={columns}
+        data={referees}
+        isLoading={false}
+        onAdd={() => handleOpenModal()}
+        addButtonLabel="Add Referee"
+        emptyMessage="No referees found. Add your first one!"
+        emptyIcon={UserCheck}
+      />
 
       <AdminModal
         isOpen={isModalOpen}
@@ -175,86 +167,92 @@ export default function RefereesManager({ initialReferees }: Props) {
         title={editingItem ? 'Edit Referee' : 'Add Referee'}
       >
         <form onSubmit={handleSubmit(onSubmit)} className={formStyles.form}>
-          <div className={formStyles.group}>
-            <label className={formStyles.label}>Name</label>
-            <input
-              type="text"
-              {...register('name')}
-              className={`${formStyles.input} ${errors.name ? formStyles.inputError : ''}`}
-              placeholder="e.g. John Doe"
-            />
-            {errors.name && <span className={formStyles.errorMessage}>{errors.name.message}</span>}
+          <div className={formStyles.row}>
+            <div className={formStyles.group}>
+              <label>Name</label>
+              <input
+                type="text"
+                {...register('name')}
+                className={formStyles.input}
+                placeholder="e.g. John Doe"
+              />
+              {errors.name && <span className="text-red-500 text-xs">{errors.name.message}</span>}
+            </div>
+
+            <div className={formStyles.group}>
+              <label>Role / Title</label>
+              <input
+                type="text"
+                {...register('role')}
+                className={formStyles.input}
+                placeholder="e.g. Project Manager"
+              />
+              {errors.role && <span className="text-red-500 text-xs">{errors.role.message}</span>}
+            </div>
           </div>
 
-          <div className={formStyles.group}>
-            <label className={formStyles.label}>Role / Title</label>
-            <input
-              type="text"
-              {...register('role')}
-              className={`${formStyles.input} ${errors.role ? formStyles.inputError : ''}`}
-              placeholder="e.g. Project Manager"
-            />
-            {errors.role && <span className={formStyles.errorMessage}>{errors.role.message}</span>}
+          <div className={formStyles.row}>
+            <div className={formStyles.group}>
+              <label>Company</label>
+              <input
+                type="text"
+                {...register('company')}
+                className={formStyles.input}
+                placeholder="e.g. Tech Corp"
+              />
+              {errors.company && <span className="text-red-500 text-xs">{errors.company.message}</span>}
+            </div>
+
+            <div className={formStyles.group}>
+              <label>Phone Number</label>
+              <input
+                type="text"
+                {...register('phone')}
+                className={formStyles.input}
+                placeholder="e.g. +254 700 000 000"
+              />
+              {errors.phone && <span className="text-red-500 text-xs">{errors.phone.message}</span>}
+            </div>
           </div>
 
-          <div className={formStyles.group}>
-            <label className={formStyles.label}>Company</label>
-            <input
-              type="text"
-              {...register('company')}
-              className={`${formStyles.input} ${errors.company ? formStyles.inputError : ''}`}
-              placeholder="e.g. Tech Corp"
-            />
-            {errors.company && <span className={formStyles.errorMessage}>{errors.company.message}</span>}
-          </div>
+          <div className={formStyles.row}>
+            <div className={formStyles.group}>
+              <label>Email (Optional)</label>
+              <input
+                type="email"
+                {...register('email')}
+                className={formStyles.input}
+                placeholder="e.g. john@example.com"
+              />
+              {errors.email && <span className="text-red-500 text-xs">{errors.email.message}</span>}
+            </div>
 
-          <div className={formStyles.group}>
-            <label className={formStyles.label}>Phone Number</label>
-            <input
-              type="text"
-              {...register('phone')}
-              className={`${formStyles.input} ${errors.phone ? formStyles.inputError : ''}`}
-              placeholder="e.g. +254 700 000 000"
-            />
-            {errors.phone && <span className={formStyles.errorMessage}>{errors.phone.message}</span>}
-          </div>
-
-          <div className={formStyles.group}>
-            <label className={formStyles.label}>Email (Optional)</label>
-            <input
-              type="email"
-              {...register('email')}
-              className={`${formStyles.input} ${errors.email ? formStyles.inputError : ''}`}
-              placeholder="e.g. john@example.com"
-            />
-            {errors.email && <span className={formStyles.errorMessage}>{errors.email.message}</span>}
-          </div>
-
-          <div className={formStyles.group}>
-            <label className={formStyles.label}>Display Order</label>
-            <input
-              type="number"
-              {...register('order', { valueAsNumber: true })}
-              className={`${formStyles.input} ${errors.order ? formStyles.inputError : ''}`}
-            />
-            {errors.order && <span className={formStyles.errorMessage}>{errors.order.message}</span>}
+            <div className={formStyles.group}>
+              <label>Display Order</label>
+              <input
+                type="number"
+                {...register('order', { valueAsNumber: true })}
+                className={formStyles.input}
+              />
+            </div>
           </div>
 
           <div className={formStyles.actions}>
-            <button
-              type="button"
-              onClick={handleCloseModal}
-              className={formStyles.cancelBtn}
-            >
+            <button type="button" onClick={handleCloseModal} className={formStyles.cancelBtn}>
               Cancel
             </button>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className={formStyles.submitBtn}
-            >
-              <Save size={20} />
-              {isSubmitting ? 'Saving...' : 'Save'}
+            <button type="submit" className={formStyles.saveBtn} disabled={isSubmitting}>
+              {isSubmitting ? (
+                 <>
+                   <span className="w-4 h-4 border-2 border-white/20 border-t-white rounded-[10px] animate-spin"></span>
+                   Saving...
+                 </>
+              ) : (
+                <>
+                  <Save size={18} />
+                  Save Referee
+                </>
+              )}
             </button>
           </div>
         </form>

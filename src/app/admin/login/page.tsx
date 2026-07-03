@@ -29,8 +29,13 @@ function LoginFormContent() {
   }, [router])
 
   // Redirect if already logged in
+  useEffect(() => {
+    if (status === 'authenticated') {
+      router.replace('/admin')
+    }
+  }, [status, router])
+
   if (status === 'authenticated') {
-    router.replace('/admin')
     return null
   }
 

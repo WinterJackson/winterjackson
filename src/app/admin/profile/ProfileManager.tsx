@@ -77,8 +77,11 @@ export default function ProfileManager() {
   if (loading) {
     return (
       <div className={adminStyles.page}>
-        <div className="flex items-center justify-center h-64">
-          <span className="w-8 h-8 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></span>
+        <div className="flex h-64 w-full items-center justify-center">
+          <div className="flex flex-col items-center">
+            <div className="w-10 h-10 border-4 border-zinc-800 border-t-[var(--bittersweet-shimmer)] rounded-full animate-spin"></div>
+            <p className="mt-4 text-gray-400 text-sm">Loading profile data...</p>
+          </div>
         </div>
       </div>
     )

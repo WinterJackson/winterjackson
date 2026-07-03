@@ -152,7 +152,7 @@ export async function getMessages() {
 
     return await prisma.message.findMany({
         orderBy: { createdAt: 'desc' },
-        take: 50
+        take: 200 // Increased from 50 to ensure historical messages aren't prematurely lost
     })
 }
 
@@ -169,6 +169,22 @@ export async function markMessageRead(id: string) {
         return { success: true }
     } catch (error) {
         return { success: false, error: 'Failed to mark read' }
+    }
+}
+
+export async function markMessageUnread(id: string) {
+    const session = await auth()
+    if (!session) return { success: false, error: 'Unauthorized' }
+
+    try {
+        await prisma.message.update({
+            where: { id },
+            data: { isRead: false }
+        })
+        revalidatePath('/admin')
+        return { success: true }
+    } catch (error) {
+        return { success: false, error: 'Failed to mark unread' }
     }
 }
 
