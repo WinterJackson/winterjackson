@@ -59,44 +59,75 @@ export async function POST(req: Request) {
             subject: 'Password Reset Request - Winter Jackson Portfolio',
             html: `
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <style>
-        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f4f5; margin: 0; padding: 0; }
-        .container { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
-        .header { background: #18181b; padding: 30px; text-align: center; }
-        .header h1 { color: #ffffff; margin: 0; font-size: 24px; letter-spacing: -0.5px; }
-        .content { padding: 40px 30px; color: #3f3f46; line-height: 1.6; }
-        .button { display: inline-block; background-color: #000000; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 500; margin: 20px 0; }
-        .footer { background: #fafafa; padding: 20px; text-align: center; color: #71717a; font-size: 12px; }
-        .link { color: #2563eb; word-break: break-all; font-size: 12px; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Recovery</title>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>Password Recovery</h1>
-        </div>
-        <div class="content">
-            <h2 style="margin-top: 0; color: #18181b;">Hello,</h2>
-            <p>We received a request to reset the password for your <strong>Winter Jackson Portfolio</strong> admin account.</p>
-            <p>Click the button below to set a new password. This link is secure and valid for <strong>1 hour</strong>.</p>
-            
-            <div style="text-align: center;">
-                <a href="${resetUrl}" class="button" target="_blank">Reset Password</a>
-            </div>
-            
-            <p>If you didn't request this change, you can safely ignore this email.</p>
-            
-            <hr style="border: 0; border-top: 1px solid #e4e4e7; margin: 30px 0;">
-            
-            <p style="font-size: 13px; color: #71717a;">Or copy and paste this link into your browser:</p>
-            <a href="${resetUrl}" class="link">${resetUrl}</a>
-        </div>
-        <div class="footer">
-            <p>&copy; ${new Date().getFullYear()} Winter Jackson. All rights reserved.</p>
-        </div>
-    </div>
+<body style="margin: 0; padding: 0; background-color: #f4f4f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f4f4f5; padding: 40px 20px;">
+        <tr>
+            <td align="center">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); overflow: hidden;">
+                    <!-- Header -->
+                    <tr>
+                        <td align="center" style="background-color: #18181b; padding: 30px 20px;">
+                            <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.5px;">Password Recovery</h1>
+                            <p style="color: #a1a1aa; margin: 8px 0 0 0; font-size: 14px;">Security alert for your admin dashboard.</p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding: 40px 30px;">
+                            <h2 style="margin: 0 0 16px 0; color: #18181b; font-size: 18px; font-weight: 600;">Hello,</h2>
+                            <p style="margin: 0 0 16px 0; color: #52525b; font-size: 15px; line-height: 1.6;">
+                                We received a request to reset the password for your <strong>Winter Jackson Portfolio</strong> admin account.
+                            </p>
+                            <p style="margin: 0 0 30px 0; color: #52525b; font-size: 15px; line-height: 1.6;">
+                                Click the button below to set a new password. This link is secure and valid for <strong>1 hour</strong>.
+                            </p>
+                            
+                            <!-- Action Button -->
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td align="center">
+                                        <a href="${resetUrl}" target="_blank" style="display: inline-block; background-color: #18181b; color: #ffffff; text-decoration: none; font-size: 15px; font-weight: 500; padding: 14px 32px; border-radius: 6px; border: 1px solid #18181b;">
+                                            Reset Password
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            <p style="margin: 30px 0 0 0; color: #71717a; font-size: 14px; text-align: center;">
+                                If you didn't request this change, you can safely ignore this email.
+                            </p>
+                            
+                            <hr style="border: 0; border-top: 1px solid #e4e4e7; margin: 30px 0;">
+                            
+                            <p style="margin: 0 0 8px 0; color: #71717a; font-size: 13px; text-align: center;">
+                                Or copy and paste this link into your browser:
+                            </p>
+                            <div style="text-align: center; word-break: break-all;">
+                                <a href="${resetUrl}" style="color: #2563eb; font-size: 13px;">${resetUrl}</a>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td align="center" style="background-color: #fafafa; border-top: 1px solid #f4f4f5; padding: 24px 20px;">
+                            <p style="margin: 0; color: #a1a1aa; font-size: 12px; line-height: 1.5;">
+                                This is an automated security message from your portfolio.<br>
+                                &copy; ${new Date().getFullYear()} Winter Jackson
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 </body>
 </html>
       `
